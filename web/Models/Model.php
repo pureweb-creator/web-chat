@@ -10,15 +10,15 @@ class Model extends \RedBeanPHP\SimpleModel
     private static string $host,$db_name,$db_username,$db_password;
     protected array $env;
 
-    protected function __construct()
+    protected function __construct($cfg)
     {
-        $dotenv = Dotenv::createImmutable("http://localhost/chat");
+        $dotenv = Dotenv::createImmutable($cfg['website_name']);
         $this->env = $dotenv->load();
 
-        self::$host = "localhost";//$this->env['DB_HOST'];
-        self::$db_name = "chat_development_db";//$this->env['DB_NAME'];
-        self::$db_username = "root";//$this->env['DB_USERNAME'];
-        self::$db_password = "";//$this->env['DB_PASSWORD'];
+        self::$host = $cfg["db_host"];
+        self::$db_name = $cfg["db_name"];
+        self::$db_username = $cfg["db_username"];
+        self::$db_password =$cfg["db_password"];
 
         R::setup("mysql:host=".self::$host.";dbname=".self::$db_name, self::$db_username, self::$db_password);
         if (!R::testConnection())

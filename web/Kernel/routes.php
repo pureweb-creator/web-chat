@@ -4,7 +4,7 @@ use Web\Controllers\Controller;
 
 $request = key($_GET);
 
-$page = new Controller();
+$page = new Controller(CONFIG);
 
 switch ($request) {
     case 'home':

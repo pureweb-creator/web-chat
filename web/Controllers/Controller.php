@@ -15,10 +15,10 @@ class Controller extends Model
     protected $validation = VALIDATION_MESSAGES;
     private $response = [];
 
-    public function __construct()
+    public function __construct($cfg)
     {
         $this->view = new View();
-        parent::__construct();
+        parent::__construct($cfg);
     }
 
     public function home_view()
@@ -46,11 +46,9 @@ class Controller extends Model
             $msg = $message_data['message_text'];
 
             $msg = preg_split("/\r\n|\n|\r/", $msg);
-            print_r($msg);
             $msg = array_map(function($item){
                 return explode(' ', $item);
             }, $msg);
-            print_r($msg);
 
             foreach ($msg as &$val){
                 $val = preg_replace('/^\*\*/', '<b>', $val);
@@ -69,11 +67,7 @@ class Controller extends Model
             foreach ($msg as &$val)
                 $val = implode(" ", $val);
 
-            print_r($msg);
-
             $msg = implode("\n", $msg);
-
-            print_r($msg);
 
             $this->add_message($msg, $message_data['user_id'],$message_data['user_name']);
 
