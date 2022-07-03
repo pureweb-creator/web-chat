@@ -1,6 +1,11 @@
 # Web Chat Widget
 
-Just a simple online chat with simple auth.
+Just a simple online chat with simple auth.<br>
+It has a few features to format text:<br>
+\*\*two asterisks\*\* for make text **bold**<br>
+\-\-two dashes\-\- for make it *curve*<br>
+\_\_two underscores\_\_ for make it ~~strike~~<br>
+and \`\`\`two backquotes\`\`\` for make it ```monospace```<br>
 
 | ![Second screenshot](https://i.ibb.co/hMQHtK0/Screenshot-10.png)  | ![Second screenshot](https://i.ibb.co/93MBW2w/Screenshot-1.png) |
 | ------------- | ------------- |
@@ -30,7 +35,7 @@ And run
 <br>```web/Kernel/config.php```</br>
 and place your connection data into this file.
 
-## Short about directory structure
+## Shortly about directory structure
 - *db* - database migrations
 - *static* - all static files such as css,js, and twig temlpates (in views folder)
 - *web* - main source code folder
