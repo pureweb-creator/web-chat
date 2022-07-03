@@ -1,0 +1,15 @@
+{% include 'inc/header.twig' with {'title':page_title} %}
+<main class="app app_login" id="loginApp">
+    <div class="container">
+        <h1 class="title">{{ page_title }}</h1>
+        <form class="form" @submit.prevent="doLogin">
+            <label for="tel" class="form__label">
+                <input type="email" class="form__input" v-model="email" placeholder="Email">
+            </label>
+            <button type="submit" class="btn form__btn">Log in now</button>
+
+            <p>[[ response.message ]]</p>
+        </form>
+    </div>
+</main>
+{% include 'inc/footer.twig' %}

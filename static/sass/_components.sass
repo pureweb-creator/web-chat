@@ -1,0 +1,46 @@
+.btn
+  font-family: inherit
+
+
+.form
+  position: relative
+  &__label
+    display: block
+    span
+      opacity: .9
+      display: block
+      margin-bottom: 5px
+  &__input
+    border: 1px solid #e6e6e6
+    font-size: 15px
+    width: 100%
+    padding: 15px
+    margin-bottom: 15px
+    outline: none
+    transition: all .1s ease
+    font-family: inherit
+
+    &:hover
+      border-color: $color2
+
+    &:focus
+      border: 2px solid $color2
+      margin-bottom: 13px
+
+  .btn
+    border: unset
+    font-weight: 500
+    display: block
+    width: 100%
+    background: $color2
+    color: #e6e6e6
+    padding: 15px
+    letter-spacing: .01em
+
+    font-size: 16px
+    cursor: pointer
+    transition: all .1s ease
+
+    text-transform: uppercase
+    &:hover
+      background: darken($color2, 10)

@@ -1,0 +1,58 @@
+// Contained within this file are all resets, variables, mixins, and any utility classes.
+// Variables
+$font: "Open Sans", sans-serif
+$color: #242424
+$color2: #1788cf
+$bg: #ffe8e8
+
+
+// Reset
+*,*::after,*::before
+  box-sizing: border-box
+
+body, html
+  margin: 0
+  padding: 0
+  font-family: $font
+  color: $color
+  background: $bg
+
+a, a:hover, a:active, a:focus
+  text-decoration: none
+  color: inherit
+
+input,button
+  font-family: inherit
+  -webkit-border-radius: 5px
+  -moz-border-radius: 5px
+  border-radius: 10px
+
+h1,h2
+  font-family: inherit
+  color: inherit
+  font-weight: 700
+
+h1,h2,h3,p,ul,li
+  margin: 0
+  padding: 0
+
+.app
+  margin-top: 200px
+
+.container
+  width: 375px
+  margin: 0 auto
+
+.title
+  margin-bottom: 15px
+  text-align: center
+// Basic
+
+
+button
+  border: unset
+  outline: none
+  background: transparent
+
+img
+  max-width: 100%

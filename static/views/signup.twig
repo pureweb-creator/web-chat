@@ -1,0 +1,23 @@
+{% include 'inc/header.twig' with {'title':page_title} %}
+<main class="app app_signup" id="signupApp">
+    <div class="container">
+        <h1 class="title">{{ page_title }}</h1>
+        <form class="form" @submit.prevent="doSignup">
+            <label for="name" class="form__label">
+                <span>Your name</span>
+                <input type="text" class="form__input" placeholder="Name" v-model="name">
+            </label>
+            <label for="tel" class="form__label">
+                <span>Your email</span>
+                <input type="email" class="form__input" v-model="email">
+            </label>
+
+            <p v-if="response.no_name==true">[[response.message]]</p>
+            <p v-if="response.no_email==true">[[response.message]]</p>
+            <p v-if="response.user_exists==true">[[response.message]]</p>
+
+            <button type="submit" class="btn form__btn">Next</button>
+        </form>
+    </div>
+</main>
+{% include 'inc/footer.twig' %}
