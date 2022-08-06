@@ -13,10 +13,13 @@ class Controller extends Model
 
     public View $view;
     protected $validation = VALIDATION_MESSAGES;
+    private $badwords = BADWORDS;
     private $response = [];
 
     public function __construct($cfg)
     {
+        $this->badwords = implode("|", $this->badwords);
+
         $this->view = new View();
         parent::__construct($cfg);
     }
@@ -40,35 +43,21 @@ class Controller extends Model
         };
 
         $wsWorker->onMessage = function ($conn, $data) use ($wsWorker) {
+
             $message_data = json_decode($data, true);
 
             $msg = htmlspecialchars(trim($message_data['message_text']));
-            $msg = $message_data['message_text'];
 
-            $msg = preg_split("/\r\n|\n|\r/", $msg);
-            $msg = array_map(function($item){
-                return explode(' ', $item);
+            $msg = preg_replace('/\*\*(.*?)\*\*/isx', '<b>$1</b>', $msg);
+            $msg = preg_replace('/--(.*?)--/isx', '<em>$1</em>', $msg);
+            $msg = preg_replace('/```(.*?)```/isx', '<pre>$1</pre>', $msg);
+            $msg = preg_replace('/__(.*?)__/isx', '<s>$1</s>', $msg);
+            $msg = preg_replace_callback("/(?<badword>{$this->badwords})/xiu",
+            function($m){
+                return str_repeat("*", strlen($m['badword'])/2);
             }, $msg);
-
-            foreach ($msg as &$val){
-                $val = preg_replace('/^\*\*/', '<b>', $val);
-                $val = preg_replace('/\*\*$/', '</b>', $val);
-
-                $val = preg_replace('/^--/', '<em>', $val);
-                $val = preg_replace('/--$/', '</em>', $val);
-
-                $val = preg_replace('/^```/', '<pre>', $val);
-                $val = preg_replace('/```$/', '</pre>', $val);
-
-                $val = preg_replace('/^__/', '<s>', $val);
-                $val = preg_replace('/__$/', '</s>', $val);
-            }
-
-            foreach ($msg as &$val)
-                $val = implode(" ", $val);
-
-            $msg = implode("\n", $msg);
-
+            # CenZorship
+            // if (!preg_match("/{$this->badwords}/xiu", $msg))
             $this->add_message($msg, $message_data['user_id'],$message_data['user_name']);
 
             foreach ($wsWorker->connections as $connection)

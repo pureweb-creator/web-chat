@@ -8,3 +8,7 @@ const CONFIG = [
 	"db_host" => "localhost",
 	"db_password" => ""
 ];
+
+const BADWORDS = [
+"дибил", "баран", "хуесос", "уебок", "хуй", "залупа", "пизда"
+];

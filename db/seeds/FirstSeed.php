@@ -19,7 +19,7 @@ class FirstSeed extends AbstractSeed
             $data  = [
                 [
                     'user_name'=>'lorenzo',
-                    'is_verified'=>true,
+                    'confirmed'=>true,
                     'tel_basic'=>'380509502686',
                     'tel_prettified'=>'+380990652902',
                     'secure_code'=>'122990',

@@ -2,23 +2,29 @@
 
 namespace Web\Models;
 
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
 use \RedBeanPHP\R as R;
 use Dotenv\Dotenv;
 
 class Model extends \RedBeanPHP\SimpleModel
 {
+    protected object $logger;
     private static string $host,$db_name,$db_username,$db_password;
     protected array $env;
 
     protected function __construct($cfg)
     {
-        $dotenv = Dotenv::createImmutable($cfg['website_name']);
-        $this->env = $dotenv->load();
+        $this->logger = new Logger('model');
+        $this->logger->pushHandler(new StreamHandler('logs/logs.log'));
+
+        // $dotenv = Dotenv::createImmutable($cfg['website_name']);
+        // $this->env = $dotenv->load();
 
         self::$host = $cfg["db_host"];
         self::$db_name = $cfg["db_name"];
         self::$db_username = $cfg["db_username"];
-        self::$db_password =$cfg["db_password"];
+        self::$db_password = $cfg["db_password"];
 
         R::setup("mysql:host=".self::$host.";dbname=".self::$db_name, self::$db_username, self::$db_password);
         if (!R::testConnection())

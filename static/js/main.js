@@ -77,6 +77,8 @@ $(document).ready(function(){
                         this.messages.push(parsed_response[i])
 
                     this.loading_offset = 100
+
+                    this.scrollDownTrigger = !this.scrollDownTrigger
                 }
 
                 this.message_text = ""
