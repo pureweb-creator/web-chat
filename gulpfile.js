@@ -63,4 +63,4 @@ function watch(){
 }
 
 gulp.task("default", gulp.parallel(watch, livereload));
-gulp.task(livereload);
+gulp.task(livereload
