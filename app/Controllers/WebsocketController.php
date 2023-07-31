@@ -39,6 +39,8 @@ class WebsocketController extends \App\Core\Controller
             $message_text = preg_replace('/--(.*?)--/isx', '<em>$1</em>', $message_text);
             $message_text = preg_replace('/```(.*?)```/isx', '<pre>$1</pre>', $message_text);
             $message_text = preg_replace('/__(.*?)__/isx', '<s>$1</s>', $message_text);
+            $message_text = nl2br($message_text);
+
             $message_data['message_text'] = $message_text;
 
             $this->messageModel->addMessage($message_data);

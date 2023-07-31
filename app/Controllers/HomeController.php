@@ -39,11 +39,11 @@ class HomeController extends Controller{
 
     public function loadMessages()
     {
-        echo json_encode(array_reverse($this->messageModel->loadMessages($_GET['offset'], $_GET['limit'], $_GET['message_from'], $_GET['message_to'])));
+        echo json_encode($this->messageModel->loadMessages($_GET['offset'], $_GET['limit'], $_GET['message_from'], $_GET['message_to']), JSON_HEX_QUOT | JSON_HEX_TAG);
     }
 
     public function loadFirstMessage(){
-        echo json_encode($this->messageModel->loadFirstMessage($_GET['message_from'], $_GET['message_to']));
+        echo json_encode($this->messageModel->loadFirstMessage($_GET['message_from'], $_GET['message_to']), JSON_HEX_QUOT | JSON_HEX_TAG);
     }
 
 }
