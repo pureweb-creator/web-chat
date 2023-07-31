@@ -1,0 +1,17 @@
+{% include 'inc/header.twig' with {'title': page_title} %}
+<main class="app app_login" id="confirmApp">
+    <div class="container">
+        <h1 class="title">{{ page_title }}</h1>
+        <form class="form" @submit.prevent="doConfirm">
+            <input type="hidden" name="_token" value="{{ session._token }}" ref="_token">
+            <label for="tel" class="form__label">
+                <input type="number" class="form__input" placeholder="5-digit code" v-model="code">
+            </label>
+
+            <button type="submit" class="btn form__btn">Login me now!</button>
+
+            <p v-if="response.success==false">[[ response.message ]]</p>
+        </form>
+    </div>
+</main>
+{% include 'inc/footer.twig' %}

@@ -1,17 +1,17 @@
 {
-    "require" : {
-        "monolog/monolog": "^1.22",
-        "twig/twig": "^2.0",
-        "robmorgan/phinx": "^0.12.10",
-        "guzzlehttp/guzzle": "^7.4",
-        "gabordemooij/redbean": "^5.7",
-        "vlucas/phpdotenv": "^5.4",
-        "google/apiclient": "^2.12",
-        "workerman/workerman": "^4.0"
+    "require": {
+        "phpmailer/phpmailer": "^6.7",
+        "monolog/monolog": "^3.2",
+        "robmorgan/phinx": "^0.13.3",
+        "fakerphp/faker": "^1.21",
+      "ext-pdo": "*",
+        "vlucas/phpdotenv": "^5.5",
+        "twig/twig": "^3.7",
+        "workerman/workerman": "^4.1"
     },
     "autoload": {
         "psr-4": {
-            "Web\\": "web/"
+            "App\\": "app/"
         }
     }
 }

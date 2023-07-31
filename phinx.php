@@ -1,10 +1,5 @@
 <?php
 
-use Dotenv\Dotenv;
-
-$dotenv = Dotenv::createImmutable('.');
-$env = $dotenv->load();
-
 return
 [
     'paths' => [
@@ -14,6 +9,15 @@ return
     'environments' => [
         'default_migration_table' => 'phinxlog',
         'default_environment' => 'development',
+        'production' => [
+            'adapter' => 'mysql',
+            'host' => 'localhost',
+            'name' => 'production_db',
+            'user' => 'root',
+            'pass' => '',
+            'port' => '3306',
+            'charset' => 'utf8',
+        ],
         'development' => [
             'adapter' => 'mysql',
             'host' => 'localhost',
@@ -23,21 +27,12 @@ return
             'port' => '3306',
             'charset' => 'utf8',
         ],
-        'production' => [
-            'adapter' => 'mysql',
-            'host' => $env['DB_HOST'],
-            'name' => $env['DB_NAME'],
-            'user' => $env['DB_USERNAME'],
-            'pass' => $env['DB_PASSWORD'],
-            'port' => '3306',
-            'charset' => 'utf8',
-        ],
         'testing' => [
             'adapter' => 'mysql',
             'host' => 'localhost',
             'name' => 'testing_db',
             'user' => 'root',
-            'pass' => '',
+            'pass' => '123',
             'port' => '3306',
             'charset' => 'utf8',
         ]

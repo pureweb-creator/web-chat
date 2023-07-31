@@ -9,7 +9,6 @@ $(document).ready(function(){
                 test: "",
                 message_text: "",
                 showEmojiPicker: false,
-
                 loading_offset: 0,
                 limit: 100,
                 messagesCount: 0,
@@ -19,7 +18,6 @@ $(document).ready(function(){
 
                 messages: [],
                 message: {
-                    user_name: "",
                     message_text: "",
                     user_id: "",
                     message_pub_date: ""
@@ -28,13 +26,13 @@ $(document).ready(function(){
             }
         },
         created: function () {
-            // получает сразу кол-во всех сообщений
-            axios.get(`action/load/messages/first`)
+            axios.get(`./home/loadFirstMessage?&message_to=${$('textarea').attr('data-message-to')}&message_from=${$('textarea').attr('data-message-from')}`)
                 .then(response=>{
-                    this.firstMessageID = response.data.id
+                    this.firstMessageID = response.data[0]?.id
                 });
 
-            axios.get(`action/load/messages?offset=${this.loading_offset}&limit=${this.limit}`)
+            // получает сразу кол-во всех сообщений
+            axios.get(`./home/loadMessages?offset=${this.loading_offset}&limit=${this.limit}&message_to=${$('textarea').attr('data-message-to')}&message_from=${$('textarea').attr('data-message-from')}`)
                 .then(response=>{
                     for (var i in response.data)
                         this.messages.push(response.data[i])
@@ -46,53 +44,45 @@ $(document).ready(function(){
                 });
 
             // opens websocket connection
-            this.ws = new WebSocket('ws://localhost:2346');
+            this.ws = new WebSocket(`ws://localhost:2346/?user=${$('textarea').attr('data-message-from')}`);
         },
         methods: {
-            newLine: function (){
-                this.scrollDownTrigger = !this.scrollDownTrigger
-                this.$refs.text_input.style.height = this.$refs.text_input.scrollHeight+"px"
-            },
-
-
             send: function (event){
-
                 // if message is not empty
-                if (this.message_text.trim().length == 0) return
+                if (this.message_text.trim().length === 0) return
 
                 this.scrollDownTrigger = !this.scrollDownTrigger
 
-                this.message.user_name = this.$refs.text_input.attributes[1].value
-                this.message.user_id = this.$refs.text_input.attributes[2].value
+                this.message.message_from = this.$refs.text_input.attributes[1].value
+                this.message.message_to = this.$refs.text_input.attributes[2].value
                 this.message.message_text = this.message_text
                 this.message.message_pub_date = Date.now()
 
                 this.ws.send(JSON.stringify(this.message))
                 this.ws.onmessage = response => {
 
-                    this.messages = [];
                     let parsed_response = JSON.parse(response.data);
 
-                    for (var i in parsed_response)
-                        this.messages.push(parsed_response[i])
+                    this.messages.push(parsed_response[0])
 
                     this.loading_offset = 100
 
                     this.scrollDownTrigger = !this.scrollDownTrigger
+
+                    this.message_text = ""
+                    this.$refs.text_input.style.height = "45px"
+                    this.$refs.chatBody.style.height = `calc(100% - 45px)`
                 }
-
-                this.message_text = ""
-                this.$refs.text_input.style.height = "auto"
-
             },
 
             loadMessages: function (){
 
                 if (this.$refs.chatBody.scrollTop === 0) {
-                    // проверяем, не доскролили ли мы до начала истории сообщений
 
-                    if (this.messages[0].id !== this.firstMessageID) {
-                        axios.get(`action/load/messages?offset=${this.loading_offset}&limit=${this.limit}`)
+                    // проверяем, не доскролили ли мы до начала истории сообщений
+                    if (this.messages[0].message_id !== this.firstMessageID) {
+
+                        axios.get(`./home/loadMessages?offset=${this.loading_offset}&limit=${this.limit}&message_to=${$('textarea').attr('data-message-to')}&message_from=${$('textarea').attr('data-message-from')}`)
                             .then(response => {
 
                                 let temp = []
@@ -109,7 +99,8 @@ $(document).ready(function(){
                             });
                     }
 
-                    this.loading_offset+=100
+                    if (this.messages.length===this.loading_offset)
+                        this.loading_offset+=100
                 }
             },
 
@@ -137,7 +128,24 @@ $(document).ready(function(){
             isScrollUp(){
                 let scrollElId = localStorage.getItem('firstBeforeLoad')
                 location.href="#"+scrollElId
-                console.log(scrollElId)
+            },
+
+            message_text: function(value){
+                let numberOfLineBreaks = (value.match(/\n/g)||[]).length;
+
+                // reset to defaults
+                if (!numberOfLineBreaks){
+                    this.$refs.text_input.style.height = "45px"
+                    this.$refs.chatBody.style.height = `calc(100% - 45px)`
+                }
+
+                this.scrollDownTrigger = !this.scrollDownTrigger
+
+                // adjust input height
+                if (numberOfLineBreaks && numberOfLineBreaks<5) {
+                    this.$refs.text_input.style.height = `${numberOfLineBreaks*20+40}px`
+                    this.$refs.chatBody.style.height = `calc(100% - ${numberOfLineBreaks*20+40}px)`
+                }
             }
         },
         computed: {
@@ -154,27 +162,32 @@ $(document).ready(function(){
             return{
                 name: "",
                 email: "",
+                _token: "",
                 response: {}
             }
+        },
+        mounted(){
+            this._token = this.$refs._token.value
         },
         methods: {
             doSignup: function (){
                 let formData = new FormData()
                 formData.append('name', this.name)
                 formData.append('email', this.email)
+                formData.append('_token', this._token)
 
                 axios({
                     method: "post",
-                    url: "action/signup",
+                    url: "./register/process",
                     data: formData
                 })
                     .then(
                         response=>{
                             this.response = response.data
-                            console.log(this.response)
 
-                            if ( this.response.ok === true ) {
-                                window.location.href = "action/confirm?email="+this.email
+                            if ( this.response.success === true ) {
+                                localStorage.setItem('email', this.email)
+                                window.location.href = "./confirm"
                             }
                         }
                     )
@@ -188,27 +201,32 @@ $(document).ready(function(){
         data() {
             return {
                 email: "",
+                _token: "",
                 response: {}
             }
         },
 
+        mounted(){
+            this._token = this.$refs._token.value
+        },
         methods: {
             doLogin: function () {
                 let formData = new FormData()
                 formData.append('email', this.email)
+                formData.append('_token', this._token)
 
                 axios({
                     method: "post",
-                    url: "action/login",
+                    url: "login/process",
                     data: formData
                 })
                     .then(
                         response => {
                             this.response = response.data
-                            console.log(this.response)
 
-                            if (this.response.ok === true) {
-                                window.location.href = "action/confirm?email="+this.email
+                            if (this.response.success === true) {
+                                localStorage.setItem('email', this.email)
+                                window.location.href = `./confirm`
                             }
                         }
                     )
@@ -223,31 +241,33 @@ $(document).ready(function(){
             return {
                 email: "",
                 code: "",
+                _token: "",
                 response: {}
             }
         },
 
+        mounted(){
+            this._token = this.$refs._token.value
+        },
+
         methods: {
             doConfirm: function () {
-
-                this.email = this.$refs.email.value;
-
                 let formData = new FormData()
-                formData.append('email', this.email)
                 formData.append('code', this.code)
+                formData.append('_token', this._token)
+                formData.append('email', localStorage.getItem('email'))
 
                 axios({
                     method: "post",
-                    url: "auth",
+                    url: "./confirm/process",
                     data: formData
                 })
                     .then(
                         response => {
                             this.response = response.data
-                            console.log(this.response)
 
-                            if (this.response.ok === true) {
-                                window.location.href = "/chat"
+                            if (this.response.success === true) {
+                                window.location.href = "./"
                             }
                         }
                     )
@@ -255,5 +275,4 @@ $(document).ready(function(){
             }
         },
     });
-
 });

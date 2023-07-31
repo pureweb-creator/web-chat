@@ -1,0 +1,18 @@
+{% include 'inc/header.twig' with {'title':title} %}
+<main class="app app_login" id="loginApp">
+    <div class="container">
+        <h1 class="title">{{ title }}</h1>
+        <form class="form" @submit.prevent="doLogin">
+            <input type="hidden" name="_token" value="{{ session._token }}" ref="_token">
+            <label for="tel" class="form__label">
+                <input type="email" class="form__input" v-model="email" placeholder="Email">
+            </label>
+            <button type="submit" class="btn form__btn">Log in now</button>
+
+            <p v-if="response.success==false">[[ response.message ]]</p>
+
+            <a href="{{ home_url }}/register">Still don't have an account? Please, register.</a>
+        </form>
+    </div>
+</main>
+{% include 'inc/footer.twig' %}

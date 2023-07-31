@@ -1,0 +1,8 @@
+@mixin scrollbar($mainColor, $hoverColor)
+  &::-webkit-scrollbar
+    width: 5px
+  &::-webkit-scrollbar-thumb
+    background: $mainColor
+    border-radius: 5px
+    &:hover
+      background: $hoverColor
