@@ -17,8 +17,6 @@ a, a:hover, a:active, a:focus {
 
 input, button {
   font-family: inherit;
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
   border-radius: 10px;
 }
 
@@ -188,13 +186,14 @@ img {
   font-size: 12px;
   background: #fff;
   display: block;
-  margin: 3px 5px;
+  margin: 4px 5px;
   max-width: 100%;
   min-width: 100px;
+  width: -moz-fit-content;
   width: fit-content;
   color: #242424;
   padding: 7px 13px 7px 13px;
-  border-radius: 5px;
+  border-radius: 18px 18px 18px 7px;
   position: relative;
 }
 .app__message_self {
@@ -287,5 +286,3 @@ emoji-picker {
 .app__message-emoji-picker-btn:hover path {
   fill: #000;
 }
-
-/*# sourceMappingURL=main.css.map */

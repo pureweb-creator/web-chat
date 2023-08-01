@@ -26,15 +26,17 @@
             <section class="app__main-window">
                 {% if message_to != -1 %}
                 <div class="app__body" ref="chatBody" @scroll="loadMessages">
-                    <a :href="'#'+index" class="app__message" :id="index" :message_id="message.message_id" :class="{'app__message_self': message.message_from == '{{ logged_user.id }}' }" :data-name="message.user_name" v-for="(message, index) in messages" :key="index">
-                        <span class="app__message-sender" v-if="message.message_from != '{{ logged_user.id }}'">[[message.user_name]]</span>
-                        <div class="app__message-text">
-                            <div v-html='message.message_text+"<span>"+getTimeFromDateTime(message.message_pub_date)+"</span>"'>
+                    <div>
+                        <a :href="'#'+index" class="app__message" :id="index" :message_id="message.message_id" :class="{'app__message_self': message.message_from == '{{ logged_user.id }}' }" :data-name="message.user_name" v-for="(message, index) in messages" :key="index">
+                            <span class="app__message-sender" v-if="message.message_from != '{{ logged_user.id }}'">[[message.user_name]]</span>
+                            <div class="app__message-text">
+                                <div v-html='message.message_text+"<span>"+getTimeFromDateTime(message.message_pub_date)+"</span>"'>
 
+                                </div>
+                                {# <span class="app__message-timestamp">[[messagePubTime(message.message_pub_date)]]</span> #}
                             </div>
-                            {# <span class="app__message-timestamp">[[messagePubTime(message.message_pub_date)]]</span> #}
-                        </div>
-                    </a>
+                        </a>
+                    </div>
                 </div>
                 <footer class="app__footer" ref="footer">
                     <form class="form" @submit.prevent="send">

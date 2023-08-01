@@ -69,6 +69,7 @@ $(document).ready(function(){
                         this.$refs.text_input.style.height = "45px"
                         this.$refs.chatBody.style.height = `calc(100% - 45px)`
                     }
+
                 },
 
                 loadMessages: function (){
