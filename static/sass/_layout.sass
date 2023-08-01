@@ -1,27 +1,43 @@
 .app_home
   margin-top: 20px !important
 
-.app__wrapper
+.wrapper
   display: flex
   height: 600px
 
-.app__user-list
-  width: 30%  
-  color: #C3FFFF
-  background: #0E1115
-  overflow-y: auto
-  border-radius: 10px 0 0 10px
-  @include scrollbar(rgba(255,255,255,0.5),rgba(255,255,255,0.3))
-  li
-    list-style: none
+.users
+  width: 30%
+  background: $accent
+  overflow-y: hidden
+  border-radius: $radius 0 0 $radius
+  border-right: 1px solid $grey
+  @include scrollbar()
 
-  li.active, li:hover
-    a
-      background: #3D4A5D
-  a
-    color: inherit
+  &:hover
+    overflow-y: auto
+
+  &__link
+    display: flex
+    align-items: center
+    padding: 7px 10px
+
+    &.active
+      background: $color2
+      color: #fff
+
+    &:not(.active):hover
+      background: rgba($grey, 0.2)
+
+  &__label
     display: block
-    padding: 10px 15px
+    text-overflow: ellipsis
+    overflow: hidden
+    color: inherit
+    white-space: nowrap
+
+  &__userpic
+    @include userpic(40px)
+    margin-right: 15px
 
 .empty-message
   height: 100%
@@ -30,72 +46,91 @@
   justify-content: center
   color: #fff
 
-.app__main-window
-  background: linear-gradient(45deg, #1788cf, #7a17cf)
-  border-radius: 0 10px 0 0
-  // margin-bottom: 50px
-  width: 70%
-  position: relative
-
-.app__body
-  padding: 10px
-  height: calc(100% - $textarea_min_height)
-  overflow-y: scroll
-  @include scrollbar(rgba(0,0,0,0.5),rgba(0,0,0,0.3))
-
-.app__messages-wrapper
+.main-window
   display: flex
   flex-direction: column
-  justify-content: flex-end
-  height: 100%
-
-.app__message
-  font-size: 12px
-  background: #fff
-  display: block
-  margin: 4px 5px
-  max-width: 100%
-  min-width: 100px
-  width: fit-content
-  color: #242424
-  padding: 7px 13px 7px 13px
-  border-radius: 18px 18px 18px 7px
+  background: $app_bg
+  border-radius: 0 10px 10px 0
+  width: 70%
+  overflow: hidden
   position: relative
-  &_self
-    background: lightskyblue
 
-.app__message-text
+.recipient-panel
+  background: $accent
+  font-size: $fontSizeBig
+  border-radius: 0 $radius 0 0
+  padding: 10px 15px
+
+  display: flex
+  align-items: center
+  justify-content: space-between
+
+  &__useremail
+    font-size: $fontSizeMedium
+    color: rgba($color, .5)
+    font-weight: 300
+
+.logout-icon
+  path
+    fill: rgba(#000, .5)
+  &:hover path
+    fill: #000
+
+.app-body
+  padding: 10px
+  height: calc(100% - $textarea_min_height)
+  overflow-y: auto
+  @include scrollbar()
+
+.messages__item
   display: flex
   align-items: flex-end
+  margin: 5px 0
+
+.message__userpic
+  @include userpic(25px)
+  margin-right: 5px
+
+.message__text
+  display: flex
+  align-items: flex-end
+  max-width: 300px
+  min-width: 100px
+  font-size: 12px
+  background: $msg_bg
+  border-radius: $radiusBig $radiusBig $radiusBig $radiusSmall
+  padding: 8px 13px 7px 13px
+  width: fit-content
+  position: relative
+  &_self
+    background: $msg_self_bg
   div
     width: 100%
     word-break: break-word
 
-.app__message-sender
-  display: block
-  font-weight: 700
-
-.app__message-text span
-  opacity: .7
-  font-size: 11px
+.message__text span
+  opacity: .5
+  font-size: $fontSizeSmall
   display: inline-block
   width: 100%
   text-align: right
   float: right
   margin-top: -10px
   margin-left: 7px
-  // bottom: 4px
-  // right: 9px
 
-.app__message-input
+.message__text_big span
+  margin-top: 0
+
+.form__message-input
   margin-bottom: 0
   padding: 0
+  padding-right: 55px
   border: 10px solid white
   font-size: 12px
   vertical-align: top
   max-width: 100%
   min-width: 100%
-  max-height: 150px
+  //max-height: 150px
   height: $textarea_min_height
   min-height: $textarea_min_height
   resize: none
@@ -111,25 +146,24 @@ emoji-picker
   position: absolute
   bottom: 70px
   right: 20px
-  border-radius: 10px
+  border-radius: $radius
   overflow: hidden
-  // display: none
 
-.app__message-send-tools
+.message-send-tools
   position: absolute
   top: 10px
   right: 10px
   display: flex
   align-items: center
-.app__message-send-btn
+.form__send-btn
   width: 20px
   margin-left: 10px
   cursor: pointer
   display: block
   padding: 0
-.app__message-send-icon
+.form__send-icon
   width: 100%
-.app__message-emoji-picker-btn
+.emoji-picker-btn
   width: 20px
   cursor: pointer
   path

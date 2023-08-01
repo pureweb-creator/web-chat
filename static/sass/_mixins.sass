@@ -1,8 +1,15 @@
-@mixin scrollbar($mainColor, $hoverColor)
+@mixin scrollbar()
   &::-webkit-scrollbar
-    width: 5px
+    width: 4px
+    background: rgba(#000, .1)
   &::-webkit-scrollbar-thumb
-    background: $mainColor
+    background: rgba(#000, .5)
     border-radius: 5px
     &:hover
-      background: $hoverColor
+      background: rgba(#000, .5)
+
+@mixin userpic($width)
+  width: $width
+  height: $width
+  border-radius: 50%
+  object-fit: cover

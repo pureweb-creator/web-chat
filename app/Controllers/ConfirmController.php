@@ -49,7 +49,7 @@ class ConfirmController extends Controller
             die;
         }
 
-        $user = $this->userModel->loadUser($email)[0];
+        $user = $this->userModel->loadUser('email',$email)[0];
         if ($user['confirmation_code'] !== $code){
             $response = [
                 'success'=>false,
@@ -60,7 +60,11 @@ class ConfirmController extends Controller
             die;
         }
 
+        $this->userModel->updateConfirmationStatus($email, 1);
+
         $_SESSION['logged_user'] = $user;
+
+        $this->userModel->updateConfirmationCode($email, '');
 
         $response = [
             'success'=>true

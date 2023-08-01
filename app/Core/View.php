@@ -25,7 +25,6 @@ class View
         $this->twig = new Environment($this->loader,['debug'=>true]);
         $this->twig->addGlobal('session', $_SESSION);
         $this->twig->addGlobal('home_url', Router::getUrl());
-        $this->twig->addGlobal('logged_user', $_SESSION['logged_user'] ?? false);
 
         try {
             $tpl = $this->twig->load($page);

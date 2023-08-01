@@ -9,7 +9,7 @@ class UserModel extends Model
     public function loadUsers(): array
     {
         try {
-            $result = $this->pdo->query('SELECT * FROM user')->fetchAll();
+            $result = $this->pdo->query('SELECT * FROM user')->fetchAll(\PDO::FETCH_ASSOC);
         } catch (\PDOException $e){
             $this->logger->critical($e->getMessage());
         }
@@ -17,12 +17,12 @@ class UserModel extends Model
         return $result;
     }
 
-    public function loadUser($email): bool|array
+    public function loadUser($field, $value): bool|array
     {
         try{
-            $stmt = $this->pdo->prepare('SELECT * FROM user WHERE user.email = ?');
-            $stmt->execute([$email]);
-            $result = $stmt->fetchAll();
+            $stmt = $this->pdo->prepare('SELECT * FROM user WHERE user.'.$field.' = ?');
+            $stmt->execute([$value]);
+            $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         } catch (\PDOException $e){
             $this->logger->critical($e->getMessage());
         }
@@ -53,4 +53,18 @@ class UserModel extends Model
 
         return $result;
     }
+
+
+    public function updateConfirmationStatus($email, $value): bool
+    {
+        try {
+            $stmt = $this->pdo->prepare('UPDATE user SET user.confirmed = ? WHERE user.email = ?');
+            $result = $stmt->execute([$value, $email]);
+        } catch (\PDOException $e){
+            $this->logger->critical($e->getMessage());
+        }
+
+        return $result;
+    }
+
 }

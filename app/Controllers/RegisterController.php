@@ -66,6 +66,16 @@ class RegisterController extends Controller
             die;
         }
 
+        if ($this->userModel->loadUser('email', $email)) {
+            $response = [
+                'success' => false,
+                'message' => 'User with that email already exists.'
+            ];
+
+            echo json_encode($response);
+            die;
+        }
+
         if (!$this->userModel->addUser($email, $name)){
             $response = [
                 'success' => false,
@@ -78,6 +88,10 @@ class RegisterController extends Controller
 
         // send confirmation
         $this->sendConfirmation($email);
+
+        echo json_encode([
+            'success' => true
+        ]);
     }
 
     public function sendConfirmation($email): void

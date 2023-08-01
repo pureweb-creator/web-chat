@@ -3,7 +3,7 @@ $(document).ready(function(){
     if ($('#app').length){
         let app = new Vue({
             el: "#app",
-            
+
             delimiters: ["[[", "]]"],
             data() {
                 return {
@@ -17,42 +17,45 @@ $(document).ready(function(){
                     messages: [],
                     message: {
                         message_text: "",
-                        user_id: ""
+                        user_id: "",
+                        message_from: "",
+                        message_to: ""
                     },
+                    test: "",
                     ws: ""
                 }
             },
             created: function () {
-                axios.get(`./home/loadFirstMessage?&message_to=${$('textarea').attr('data-message-to')}&message_from=${$('textarea').attr('data-message-from')}`)
+                axios.get(`./home/loadFirstMessage?&message_to=${$('#messageTo').val()}&message_from=${$('#messageFrom').val()}`)
                     .then(response=>{
                         this.firstMessageID = response.data[0]?.id
                     });
 
                 // получает сразу кол-во всех сообщений
-                axios.get(`./home/loadMessages?offset=${this.loading_offset}&limit=${this.limit}&message_to=${$('textarea').attr('data-message-to')}&message_from=${$('textarea').attr('data-message-from')}`)
+                axios.get(`./home/loadMessages?offset=${this.loading_offset}&limit=${this.limit}&message_to=${$('#messageTo').val()}&message_from=${$('#messageFrom').val()}`)
                     .then(response=>{
                         this.messages = response.data.reverse()
 
                         // скроллим сразу все вниз при загрузке
                         this.scrollDownTrigger = !this.scrollDownTrigger
-                        
+
                         this.loading_offset+=100
                     });
 
                 // opens websocket connection
-                this.ws = new WebSocket(`ws://localhost:2346/?user=${$('textarea').attr('data-message-from')}`);
+                this.ws = new WebSocket(`ws://localhost:2346/?user=${$('#messageFrom').val()}`);
             },
             methods: {
                 send: function (event){
-                    
+
                     if (this.message.message_text.trim().length === 0)
                         return
 
                     // скроллим до конца вниз
                     this.scrollDownTrigger = !this.scrollDownTrigger
 
-                    this.message.message_from = this.$refs.text_input.attributes[1].value
-                    this.message.message_to = this.$refs.text_input.attributes[2].value
+                    this.message.message_from = $('#messageFrom').val()
+                    this.message.message_to = $('#messageTo').val()
 
                     this.ws.send(JSON.stringify(this.message))
                     this.ws.onmessage = response => {
@@ -67,7 +70,6 @@ $(document).ready(function(){
 
                         this.message.message_text = ""
                         this.$refs.text_input.style.height = "45px"
-                        this.$refs.chatBody.style.height = `calc(100% - 45px)`
                     }
 
                 },
@@ -79,14 +81,14 @@ $(document).ready(function(){
                         // проверяем, не доскролили ли мы до начала истории сообщений
                         if (this.messages[0].message_id !== this.firstMessageID) {
 
-                            axios.get(`./home/loadMessages?offset=${this.loading_offset}&limit=${this.limit}&message_to=${$('textarea').attr('data-message-to')}&message_from=${$('textarea').attr('data-message-from')}`)
+                            axios.get(`./home/loadMessages?offset=${this.loading_offset}&limit=${this.limit}&message_to=${$('#messageTo').val()}&message_from=${$('#messageFrom').val()}`)
                                 .then(response => {
 
                                     let temp = []
 
                                     for (var i in response.data.reverse())
                                         temp.push(response.data[i])
-                                
+
                                     this.messages = temp.concat(this.messages)
 
                                     // скроллим к элементу, на котором остановились
@@ -112,24 +114,22 @@ $(document).ready(function(){
                 // при отравке сообщения, скроллить вниз до конца
                 scrollDownTrigger() {
                     this.$nextTick(()=>{
-                       this.$refs.chatBody.scrollTop = this.$refs.chatBody.scrollHeight
+                        this.$refs.chatBody.scrollTop = this.$refs.chatBody.scrollHeight
                     });
                 },
 
                 'message.message_text': function(value){
-                    let numberOfLineBreaks = (value.match(/\n/g)||[]).length;
+                    this.scrollDownTrigger = !this.scrollDownTrigger
+
+                    let numberOfLineBreaks = (value.match(/\r|\r\n|\n/g)||[]).length+1;
 
                     // reset to defaults
-                    if (!numberOfLineBreaks){
+                    if (!numberOfLineBreaks)
                         this.$refs.text_input.style.height = "45px"
-                        this.$refs.chatBody.style.height = `calc(100% - 45px)`
-                    }
 
                     // adjust input height
-                    if (numberOfLineBreaks && numberOfLineBreaks<5) {
-                        this.$refs.text_input.style.height = `${numberOfLineBreaks*20+40}px`
-                        this.$refs.chatBody.style.height = `calc(100% - ${numberOfLineBreaks*20+40}px)`
-                    }
+                    if (numberOfLineBreaks && numberOfLineBreaks<12)
+                        this.$refs.text_input.style.height = `${numberOfLineBreaks * 20}px`
                 }
             },
             computed: {
@@ -139,7 +139,7 @@ $(document).ready(function(){
             }
         });
     }
-    
+
     if ($('#signupApp').length){
         let signUp = new Vue({
             el: "#signupApp",
@@ -170,6 +170,8 @@ $(document).ready(function(){
                         .then(
                             response=>{
                                 this.response = response.data
+
+                                console.log(response.data)
 
                                 if ( this.response.success === true ) {
                                     localStorage.setItem('email', this.email)

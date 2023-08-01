@@ -47,7 +47,7 @@ class LoginController extends Controller
             die;
         }
 
-        if (!$this->userModel->loadUser($email)) {
+        if (!$this->userModel->loadUser('email', $email)) {
             $response = [
                 'success' => false,
                 'message' => 'User with that email doesn\'t exists.'

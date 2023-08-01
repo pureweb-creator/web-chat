@@ -1,9 +1,25 @@
-// Contained within this file are all resets, variables, mixins, and any utility classes.
-// Variables
-$font: "Open Sans", sans-serif
+// Fonts
+$font: 'Rubik', sans-serif
+$fontSizeBig: 18px
+$fontSizeMedium: 15px
+$fontSizeSmall: 10px
+
+// Colors
 $color: #242424
-$color2: #1788cf
-$bg: #ffe8e8
+$color2: #419FD9
+$window_bg: #ffe8e8
+$app_bg: linear-gradient(-45deg, #35C3F3 0%, #8b9fe8 20%, #e681d8 39%, #ffa9a4 76%, #FED2CE 100%)
+$accent: #fff
+$grey: #cdcdd0
+$msg_bg: #fff
+$msg_self_bg: #FFF3D5
+
+// Border-radius
+$radius: 10px
+$radiusBig: 18px
+$radiusSmall: 4px
+
+// Sizes
 $textarea_min_height: 45px
 
 // Reset
@@ -11,15 +27,18 @@ $textarea_min_height: 45px
   box-sizing: border-box
 
 body, html
-  margin: 0
   padding: 0
   font-family: $font
+  font-size: $fontSizeMedium
   color: $color
-  background: $bg
+  background: $window_bg
 
 a, a:hover, a:active, a:focus
   text-decoration: none
   color: inherit
+
+ul,li
+  list-style: none
 
 input,button
   font-family: inherit
@@ -55,3 +74,7 @@ button
 
 img
   max-width: 100%
+
+
+b
+  font-weight: 500

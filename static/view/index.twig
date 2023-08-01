@@ -2,69 +2,96 @@
 
 <main class="app app_home" id="app" @keydown.ctrl.enter="send">
     <div class="container">
-        <h1 class="title">Welcome, {{ logged_user.user_name }}</h1>
+        <h1 class="title">Welcome, {{ session.logged_user.user_name }}</h1>
 
-        <div class="app__wrapper">
-            <ul class="app__user-list">
-                <li class="{% if logged_user.id == message_to %}active{% endif %}">
-                    <a href="{{ home_url }}?private=true&uid={{logged_user.id}}">
-                        Saved Messages
+        <div class="wrapper">
+            <ul class="users">
+                <li class="users__item">
+                    <a class="users__link {% if session.logged_user.id == message_to.id %}active{% endif %}" href="{{ home_url }}?private=true&uid={{session.logged_user.id}}">
+                        <img class="users__userpic" src="{{ home_url }}/static/img/user_3177440.png" alt="user picture">
+                        <span class="users__label">Saved Messages</span>
                     </a>
                 </li>
 
                 {% for user in users %}
-                    {% if user.id != logged_user.id %}
-                        <li class="{% if user.id == message_to %}active{% endif %}">
-                            <a href="{{ home_url }}?private=true&uid={{user.id}}">
-                                    {{ user.user_name }}
+                    {% if user.id != session.logged_user.id %}
+                        <li class="users__item">
+                            <a class="users__link {% if user.id == message_to.id %}active{% endif %}" href="{{ home_url }}?private=true&uid={{user.id}}">
+                                <img class="users__userpic" src="{{ home_url }}/static/img/user_3177440.png" alt="user picture">
+                                <span class="users__label">{{ user.user_name }}</span>
                             </a>
                         </li>
                     {% endif %}
                 {% endfor %}
             </ul>
-
-            <section class="app__main-window">
-                {% if message_to != -1 %}
-                <div class="app__body" ref="chatBody" @scroll="loadMessages">
-                    <div>
-                        <a :href="'#'+index" class="app__message" :id="index" :message_id="message.message_id" :class="{'app__message_self': message.message_from == '{{ logged_user.id }}' }" :data-name="message.user_name" v-for="(message, index) in messages" :key="index">
-                            <span class="app__message-sender" v-if="message.message_from != '{{ logged_user.id }}'">[[message.user_name]]</span>
-                            <div class="app__message-text">
-                                <div v-html='message.message_text+"<span>"+getTimeFromDateTime(message.message_pub_date)+"</span>"'>
-
-                                </div>
-                                {# <span class="app__message-timestamp">[[messagePubTime(message.message_pub_date)]]</span> #}
+            <section class="main-window">
+                {% if message_to != false %}
+                    <header class="recipient-panel">
+                        {% if session.logged_user.id == message_to.id %}
+                            <p>Saved messages</p>
+                        {% else %}
+                            <div>
+                                <p class="recipient-panel__username">{{ message_to.user_name }}</p>
+                                <p class="recipient-panel__useremail">{{ message_to.email }}</p>
                             </div>
-                        </a>
-                    </div>
-                </div>
-                <footer class="app__footer" ref="footer">
-                    <form class="form" @submit.prevent="send">
-                        <textarea
-                                placeholder="Press Ctrl+Enter to send"
-                                ref="text_input"
-                                v-model="message.message_text"
-                                data-message-from="{{ logged_user.id }}"
-                                data-message-to="{{message_to}}"
-                                class="form__input app__message-input"
-                        ></textarea>
-                        <div class="app__message-send-tools">
-                            <svg  @click="showEmojiPicker = !showEmojiPicker" class="app__message-emoji-picker-btn" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                                <path fill="#c4c4c4" v-if="!showEmojiPicker" d="M130.7 313.9C126.5 300.4 137.8 288 151.1 288H364.5C378.7 288 389.9 300.4 385.8 313.9C368.1 368.4 318.2 408 258.2 408C198.2 408 147.5 368.4 130.7 313.9V313.9zM208.4 192C208.4 209.7 194 224 176.4 224C158.7 224 144.4 209.7 144.4 192C144.4 174.3 158.7 160 176.4 160C194 160 208.4 174.3 208.4 192zM304.4 192C304.4 174.3 318.7 160 336.4 160C354 160 368.4 174.3 368.4 192C368.4 209.7 354 224 336.4 224C318.7 224 304.4 209.7 304.4 192zM512 256C512 397.4 397.4 512 256 512C114.6 512 0 397.4 0 256C0 114.6 114.6 0 256 0C397.4 0 512 114.6 512 256zM256 48C141.1 48 48 141.1 48 256C48 370.9 141.1 464 256 464C370.9 464 464 370.9 464 256C464 141.1 370.9 48 256 48z"/>
-                                <path fill="#000" v-if="showEmojiPicker" d="M130.7 313.9C126.5 300.4 137.8 288 151.1 288H364.5C378.7 288 389.9 300.4 385.8 313.9C368.1 368.4 318.2 408 258.2 408C198.2 408 147.5 368.4 130.7 313.9V313.9zM208.4 192C208.4 209.7 194 224 176.4 224C158.7 224 144.4 209.7 144.4 192C144.4 174.3 158.7 160 176.4 160C194 160 208.4 174.3 208.4 192zM304.4 192C304.4 174.3 318.7 160 336.4 160C354 160 368.4 174.3 368.4 192C368.4 209.7 354 224 336.4 224C318.7 224 304.4 209.7 304.4 192zM512 256C512 397.4 397.4 512 256 512C114.6 512 0 397.4 0 256C0 114.6 114.6 0 256 0C397.4 0 512 114.6 512 256zM256 48C141.1 48 48 141.1 48 256C48 370.9 141.1 464 256 464C370.9 464 464 370.9 464 256C464 141.1 370.9 48 256 48z"/>
-                            </svg>
+                        {% endif %}
 
-                            <button v-show="messageNotEmpty" class="app__message-send-btn" type="submit">
-                                <img class="app__message-send-icon" src="static/img/icons8-sent-96.png" alt="send message button">
-                            </button>
-                        </div>
-                    </form>
-                    <emoji-picker
-                            class="light"
-                            v-if="showEmojiPicker"
-                            @emoji-click="getEmoji"
-                    ></emoji-picker>
-                </footer>
+                        <a href="{{ home_url }}/logout">
+                            <svg class="logout-icon" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M502.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-128-128c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L402.7 224 192 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l210.7 0-73.4 73.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l128-128zM160 96c17.7 0 32-14.3 32-32s-14.3-32-32-32L96 32C43 32 0 75 0 128L0 384c0 53 43 96 96 96l64 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-64 0c-17.7 0-32-14.3-32-32l0-256c0-17.7 14.3-32 32-32l64 0z"/></svg>
+                        </a>
+                    </header>
+                    <section class="app-body" ref="chatBody" @scroll="loadMessages">
+                        <ul class="messages">
+                            <li
+                                    v-for="(message, index) in messages"
+                                    :key="index"
+                                    :id="index"
+                                    :message_id="message.message_id"
+                                    class="messages__item message">
+                                <img class="message__userpic" src="{{ home_url }}/static/img/user_3177440.png" alt="user picture">
+
+                                <a
+                                        :href="'#'+index"
+                                        class="message__text"
+                                        :class="{
+                                        'message__text_self': message.message_from == '{{ session.logged_user.id }}',
+                                        'message__text_big': message.message_text.length >= 37
+                                        }">
+                                    <div v-html='message.message_text+"<span>"+getTimeFromDateTime(message.message_pub_date)+"</span>"'>
+
+                                    </div>
+                                </a>
+                            </li>
+                        </ul>
+                    </section>
+                    <footer class="footer" ref="footer">
+                        <form class="form" @submit.prevent="send">
+                            <textarea
+                                    placeholder="Write a message..."
+                                    v-model="message.message_text"
+                                    class="form__input form__message-input"
+                                    id="formMessage"
+                                    ref="text_input"
+                            ></textarea>
+                            <input type="hidden" name="message_from" id="messageFrom" value="{{ session.logged_user.id }}">
+                            <input type="hidden" name="message_to" id="messageTo" value="{{ message_to.id }}">
+                            <div class="message-send-tools">
+                                <svg  @click="showEmojiPicker = !showEmojiPicker" class="emoji-picker-btn" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                                    <path fill="#c4c4c4" v-if="!showEmojiPicker" d="M130.7 313.9C126.5 300.4 137.8 288 151.1 288H364.5C378.7 288 389.9 300.4 385.8 313.9C368.1 368.4 318.2 408 258.2 408C198.2 408 147.5 368.4 130.7 313.9V313.9zM208.4 192C208.4 209.7 194 224 176.4 224C158.7 224 144.4 209.7 144.4 192C144.4 174.3 158.7 160 176.4 160C194 160 208.4 174.3 208.4 192zM304.4 192C304.4 174.3 318.7 160 336.4 160C354 160 368.4 174.3 368.4 192C368.4 209.7 354 224 336.4 224C318.7 224 304.4 209.7 304.4 192zM512 256C512 397.4 397.4 512 256 512C114.6 512 0 397.4 0 256C0 114.6 114.6 0 256 0C397.4 0 512 114.6 512 256zM256 48C141.1 48 48 141.1 48 256C48 370.9 141.1 464 256 464C370.9 464 464 370.9 464 256C464 141.1 370.9 48 256 48z"/>
+                                    <path fill="#000" v-if="showEmojiPicker" d="M130.7 313.9C126.5 300.4 137.8 288 151.1 288H364.5C378.7 288 389.9 300.4 385.8 313.9C368.1 368.4 318.2 408 258.2 408C198.2 408 147.5 368.4 130.7 313.9V313.9zM208.4 192C208.4 209.7 194 224 176.4 224C158.7 224 144.4 209.7 144.4 192C144.4 174.3 158.7 160 176.4 160C194 160 208.4 174.3 208.4 192zM304.4 192C304.4 174.3 318.7 160 336.4 160C354 160 368.4 174.3 368.4 192C368.4 209.7 354 224 336.4 224C318.7 224 304.4 209.7 304.4 192zM512 256C512 397.4 397.4 512 256 512C114.6 512 0 397.4 0 256C0 114.6 114.6 0 256 0C397.4 0 512 114.6 512 256zM256 48C141.1 48 48 141.1 48 256C48 370.9 141.1 464 256 464C370.9 464 464 370.9 464 256C464 141.1 370.9 48 256 48z"/>
+                                </svg>
+
+                                <button v-show="messageNotEmpty" class="form__send-btn" type="submit">
+                                    <img class="form__send-icon" src="static/img/icons8-sent-96.png" alt="send message button">
+                                </button>
+                            </div>
+                        </form>
+                        <emoji-picker
+                                class="light"
+                                v-if="showEmojiPicker"
+                                @emoji-click="getEmoji"
+                        ></emoji-picker>
+                    </footer>
                 {% else %}
                     <div class="empty-message">
                         Select chat to start messaging
