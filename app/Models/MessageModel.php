@@ -6,7 +6,7 @@ use App\Core\Model;
 
 class MessageModel extends Model
 {
-    public function loadMessages($offset, $limit, $message_from, $message_to): bool|array
+    public function loadMessages($offset, $limit, $message_from, $message_to)
     {
         try {
             $stmt = $this->pdo->prepare("
@@ -31,7 +31,7 @@ class MessageModel extends Model
             $this->logger->critical($e->getMessage());
         }
 
-        return $result;
+        return $result ?? false;
     }
 
     public function loadFirstMessage($message_from, $message_to)

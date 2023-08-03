@@ -20,10 +20,10 @@ return
         ],
         'development' => [
             'adapter' => 'mysql',
-            'host' => 'localhost',
+            'host' => 'mysql',
             'name' => 'chat_development_db',
             'user' => 'root',
-            'pass' => '',
+            'pass' => 'root',
             'port' => '3306',
             'charset' => 'utf8',
         ],

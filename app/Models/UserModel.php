@@ -54,7 +54,6 @@ class UserModel extends Model
         return $result;
     }
 
-
     public function updateConfirmationStatus($email, $value): bool
     {
         try {

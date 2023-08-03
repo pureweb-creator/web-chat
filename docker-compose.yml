@@ -1,0 +1,56 @@
+version: '3.8'
+
+# Services
+services:
+  # NGINX Service
+  nginx:
+    image: nginx
+    ports:
+      - 80:80
+    volumes:
+      - ./:/var/www/web-chat.loc
+      - ./.docker/nginx/conf.d:/etc/nginx/conf.d
+    depends_on:
+      - php
+
+  # PHP Service
+  php:
+    build: ./.docker/php
+    working_dir: /var/www/web-chat.loc
+    volumes:
+      - ./:/var/www/web-chat.loc
+    depends_on:
+      mysql:
+        condition: service_healthy
+  # MySQL Service
+  mysql:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_ROOT_HOST: "%"
+    volumes:
+      - ./.docker/mysql/my.cnf:/etc/mysql/my.cnf
+      - mysqldata:/var/lib/mysql
+    healthcheck:
+      test: mysqladmin ping -h 127.0.0.1 -u root --password=$$MYSQL_ROOT_PASSWORD
+      interval: 5s
+      retries: 10
+
+  # PhpMyAdmin Service
+  phpmyadmin:
+    image: phpmyadmin
+    restart: always
+    ports:
+      - 8080:80
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=mysql
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+# Volumes
+volumes:
+  mysqldata:
