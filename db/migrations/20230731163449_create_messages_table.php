@@ -23,10 +23,8 @@ final class CreateMessagesTable extends AbstractMigration
 
         $this->table('message')
             ->addColumn('message_text', 'string', ['limit'=>4096])
-            ->addColumn('message_pub_date', 'timestamp', ['collation'=>'utf8mb4_general_ci'])
+            ->addColumn('message_pub_date', 'timestamp', ['collation'=>'utf8mb4_general_ci', 'default'=>'CURRENT_TIMESTAMP'])
             ->addColumn('message_to', 'biginteger')
-            ->addColumn('confirmed', 'biginteger')
-            ->addColumn('confirmation_code', 'string', ['limit'=>5])
             ->save();
     }
 }
