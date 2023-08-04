@@ -20,7 +20,7 @@ return
         ],
         'development' => [
             'adapter' => 'mysql',
-            'host' => 'mysql',
+            'host' => 'localhost',
             'name' => 'chat_development_db',
             'user' => 'root',
             'pass' => '',
