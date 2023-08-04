@@ -10,11 +10,15 @@ final class Router{
     {
         try {
             // remove get parameters from string
-            $clean_url = preg_replace('/\?.*$/','',$_SERVER['REQUEST_URI']);
-            $uri = array_filter(explode('/', $clean_url));
+            $clean_url = preg_replace("/\?.*$/","",$_SERVER["REQUEST_URI"]);
+            $uri = array_filter(explode("/", $clean_url));
+            
+            // cratch for local servers with "http://localhost/domain-name" uri
+            $index = $_SERVER["HTTP_HOST"]=="localhost" ? 2 : 1;
 
-            $controller_name = ucfirst($uri[1] ?? 'home')."Controller";
-            $controller_method = $uri[2] ?? 'index';
+            $controller_name = ucfirst($uri[$index] ?? "home")."Controller";
+            $controller_method = $uri[$index+1] ?? "index";
+
             $controller_fullname = "App\Controllers\\$controller_name";
 
             $controller = new $controller_fullname;
@@ -24,7 +28,7 @@ final class Router{
             throw new \Exception("Page not found");
 
         } catch (\Exception $e){
-            header('HTTP/1.1 404 Not Found');
+            header("HTTP/1.1 404 Not Found");
             header("Status: 404 Not Found");
             die();
         }
