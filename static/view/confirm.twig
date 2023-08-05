@@ -1,16 +1,21 @@
 {% include 'inc/header.twig' with {'title': page_title} %}
-<main class="app app_login" id="confirmApp">
+<main class="app app_auth" id="confirmApp">
     <div class="container">
-        <h1 class="title">{{ page_title }}</h1>
-        <form class="form" @submit.prevent="doConfirm">
+        <h1 class="title">{{ title }}</h1>
+        <form class="form form_type_auth" @submit.prevent="doConfirm">
             <input type="hidden" name="_token" value="{{ session._token }}" ref="_token">
+            <input type="hidden" name="email" value="{{ email }}" ref="email">
             <label for="tel" class="form__label">
                 <input type="number" class="form__input" placeholder="5-digit code" v-model="code">
             </label>
 
             <button type="submit" class="btn form__btn">Login me now!</button>
 
-            <p v-if="response.success==false">[[ response.message ]]</p>
+            {% if session.response is defined and session.response.success==false %}
+                <p class="form-help">{{ session.response.message }}</p>
+            {% endif %}
+
+            <p class="form-help" v-if="response.success==false">[[ response.message ]]</p>
         </form>
     </div>
 </main>

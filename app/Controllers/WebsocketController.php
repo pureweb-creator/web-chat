@@ -16,7 +16,7 @@ class WebsocketController extends \App\Core\Controller
 
     public function listen(): void
     {
-        $wsWorker = new Worker('websocket://0.0.0.0:2346');
+        $wsWorker = new Worker('websocket://0.0.0.0:8000');
         $wsWorker->count = 1;
         $activeConnections = [];
 

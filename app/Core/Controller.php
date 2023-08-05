@@ -22,6 +22,8 @@ abstract class Controller
         $this->logger = new Logger('main');
         $this->logger->pushHandler(new StreamHandler(__DIR__.'/../../debug.log', Level::Warning));
 
+        unset($_SESSION["response"]);
+
         $this->view = new View($this->logger);
     }
 }

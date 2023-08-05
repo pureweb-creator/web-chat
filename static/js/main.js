@@ -13,6 +13,7 @@ $(document).ready(function(){
                     messagesCount: 0,
                     firstMessageID: 0,
                     scrollDownTrigger: false,
+                    activeItem: null,
 
                     messages: [],
                     message: {
@@ -43,9 +44,15 @@ $(document).ready(function(){
                     });
 
                 // opens websocket connection
-                this.ws = new WebSocket(`ws://localhost:2346/?user=${$('#messageFrom').val()}`);
+                this.ws = new WebSocket(`ws://127.0.0.1:8000/ws/?user=${$('#messageFrom').val()}`);
             },
             methods: {
+                onInput(e) {
+                    this.message.message_text = e.target.innerText
+
+                    // if new line, scroll entire dialog body
+                    this.scrollDownTrigger = !this.scrollDownTrigger
+                },
                 send: function (event){
 
                     if (this.message.message_text.trim().length === 0)
@@ -69,9 +76,37 @@ $(document).ready(function(){
                         this.scrollDownTrigger = !this.scrollDownTrigger
 
                         this.message.message_text = ""
-                        this.$refs.text_input.style.height = "45px"
+                        this.$refs.textInput.innerText = ""
                     }
 
+                },
+
+                copyToCliptray(msgText){
+                    let strippedText = msgText.replace(/(<([^>]+)>)/gi, "")
+                    navigator.clipboard.writeText(strippedText)
+                },
+
+                // not secure without CSRF :(
+                deleteMessage(msgIdx, msgId){
+                    let formData = new FormData()
+                    formData.append('id', msgId)
+
+                    axios({
+                        method: "post",
+                        url: "./home/deleteMessage",
+                        data: formData
+                    })
+                        .then(
+                            response=>{
+                                this.response = response.data
+
+                                // if deleted in db, then delete in array in frontend
+                                if (this.response.success === true){
+                                    if (msgIdx > -1)
+                                        this.messages.splice(msgIdx, 1)
+                                }
+                            }
+                        )
                 },
 
                 loadMessages: function (){
@@ -107,7 +142,7 @@ $(document).ready(function(){
                 },
 
                 getEmoji: function(e){
-                    this.message.message_text += e.detail.unicode
+                    this.$refs.textInput.innerText += e.detail.unicode
                 }
             },
             watch: {
@@ -116,20 +151,6 @@ $(document).ready(function(){
                     this.$nextTick(()=>{
                         this.$refs.chatBody.scrollTop = this.$refs.chatBody.scrollHeight
                     });
-                },
-
-                'message.message_text': function(value){
-                    this.scrollDownTrigger = !this.scrollDownTrigger
-
-                    let numberOfLineBreaks = (value.match(/\r|\r\n|\n/g)||[]).length+1;
-
-                    // reset to defaults
-                    if (!numberOfLineBreaks)
-                        this.$refs.text_input.style.height = "45px"
-
-                    // adjust input height
-                    if (numberOfLineBreaks && numberOfLineBreaks<12)
-                        this.$refs.text_input.style.height = `${numberOfLineBreaks * 20}px`
                 }
             },
             computed: {
@@ -174,8 +195,7 @@ $(document).ready(function(){
                                 console.log(response.data)
 
                                 if ( this.response.success === true ) {
-                                    localStorage.setItem('email', this.email)
-                                    window.location.href = "./confirm"
+                                    window.location.href = `./confirm?email=${this.email}`
                                 }
                             }
                         )
@@ -214,10 +234,8 @@ $(document).ready(function(){
                             response => {
                                 this.response = response.data
 
-                                if (this.response.success === true) {
-                                    localStorage.setItem('email', this.email)
-                                    window.location.href = `./confirm`
-                                }
+                                if (this.response.success === true)
+                                    window.location.href = `./confirm?email=${this.email}`
                             }
                         )
                 }
@@ -240,6 +258,7 @@ $(document).ready(function(){
 
             mounted(){
                 this._token = this.$refs._token.value
+                this.email = this.$refs.email.value
             },
 
             methods: {
@@ -247,7 +266,7 @@ $(document).ready(function(){
                     let formData = new FormData()
                     formData.append('code', this.code)
                     formData.append('_token', this._token)
-                    formData.append('email', localStorage.getItem('email'))
+                    formData.append('email', this.email)
 
                     axios({
                         method: "post",
@@ -258,9 +277,8 @@ $(document).ready(function(){
                             response => {
                                 this.response = response.data
 
-                                if (this.response.success === true) {
+                                if (this.response.success === true)
                                     window.location.href = "./"
-                                }
                             }
                         )
                         .catch(error=>{console.log(error.message)})

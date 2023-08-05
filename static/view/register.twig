@@ -1,21 +1,22 @@
 {% include 'inc/header.twig' with {'title':title} %}
-<main class="app app_signup" id="signupApp">
+<main class="app app_auth" id="signupApp">
     <div class="container">
         <h1 class="title">{{ title }}</h1>
-        <form class="form" @submit.prevent="doSignup">
+        <form class="form form_type_auth" @submit.prevent="doSignup">
             <input type="hidden" name="_token" value="{{ session._token }}" ref="_token">
             <label for="name" class="form__label">
-                <span>Your name</span>
-                <input type="text" class="form__input" v-model="name">
+                <input type="text" class="form__input" placeholder="Name" v-model="name">
             </label>
             <label for="tel" class="form__label">
-                <span>Your email</span>
-                <input type="email" class="form__input" v-model="email">
+                <input type="email" class="form__input" placeholder="E-mail" v-model="email">
             </label>
 
-            <p v-if="response.success==false">[[response.message]]</p>
+            <p class="form-help" v-if="response.success==false">[[response.message]]</p>
 
             <button type="submit" class="btn form__btn">Next</button>
+
+            <a href="{{ home_url }}/login" class="form__reg-link">Already have an account? Please, login.</a>
+
         </form>
     </div>
 </main>

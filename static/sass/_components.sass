@@ -21,21 +21,21 @@
     font-family: inherit
 
     &:hover
-      border-color: $color2
+      border-color: $accentColor
 
     &:focus
-      border: 2px solid $color2
-      margin-bottom: 13px
+      border-color: $accentColor
 
-  .btn
+  &__btn
     border: unset
     font-weight: 500
     display: block
     width: 100%
-    background: $color2
+    background: $accentColor
     color: #e6e6e6
     padding: 15px
     letter-spacing: .01em
+    margin-bottom: 15px
 
     font-size: 16px
     cursor: pointer
@@ -43,4 +43,4 @@
 
     text-transform: uppercase
     &:hover
-      background: darken($color2, 10)
+      background: darken($accentColor, 10)

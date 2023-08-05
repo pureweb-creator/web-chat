@@ -65,8 +65,18 @@ class MessageModel extends Model
             $stmt = $this->pdo->prepare('INSERT INTO message (message_from, message_to, message_text) VALUES (?,?,?)');
             $stmt->execute([$message['message_from'], $message['message_to'], $message['message_text']]);
         } catch (\PDOException $e){
-            echo $e->getMessage();
             $this->logger->critical($e->getMessage(), ['file'=>$e->getFile(),'line'=>$e->getLine()]);
         }
+    }
+
+    public function deleteMessage($msgId){
+        try {
+            $stmt = $this->pdo->prepare("DELETE FROM message WHERE id = ?");
+            $stmt->execute([$msgId]);
+        } catch (\PDOException $e){
+            $this->logger->critical($e->getMessage(), ['file'=>$e->getFile(),'line'=>$e->getLine()]);
+        }
+
+        return true;
     }
 }

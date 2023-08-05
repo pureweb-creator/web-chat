@@ -86,37 +86,8 @@ class RegisterController extends Controller
             die;
         }
 
-        // send confirmation
-        $this->sendConfirmation($email);
-
         echo json_encode([
             'success' => true
         ]);
-    }
-
-    public function sendConfirmation($email): void
-    {
-        $confirmation_code = rand(10000,99999);
-
-        if (!$this->userModel->updateConfirmationCode($email, $confirmation_code)){
-            $response = [
-                'success' => false,
-                'message' => 'Unexpected error.'
-            ];
-
-            echo json_encode($response);
-            die;
-        }
-
-        $headers = "From: no-reply@chat.com;\nContent-type: text/html charset=utf-8\nReply-to: no-reply@chat.com";
-        if (!@mail($email, "=?UTF-8?B?".base64_encode("Подтверждение")."?=","Your confimation code is: <b>$confirmation_code</b>", $headers)){
-            $response = [
-                'success' => false,
-                'message' => 'Email does not sent.'
-            ];
-
-            echo json_encode($response);
-            die;
-        }
     }
 }

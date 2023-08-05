@@ -6,10 +6,12 @@ use App\Core\Model;
 
 class UserModel extends Model
 {
-    public function loadUsers(): array
+    public function loadUsers($currentUserId): array
     {
         try {
-            $result = $this->pdo->query('SELECT * FROM user')->fetchAll(\PDO::FETCH_ASSOC);
+            $stmt = $this->pdo->query("SELECT user_name, id FROM user");
+            $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
         } catch (\PDOException $e){
             $this->logger->critical($e->getMessage());
         }

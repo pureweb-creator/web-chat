@@ -2,6 +2,7 @@
 namespace App\Controllers;
 
 use App\Core\Controller;
+use App\Core\Middleware;
 use App\Models\MessageModel;
 use App\Models\UserModel;
 
@@ -27,10 +28,9 @@ class HomeController extends Controller{
         $message_to = isset($_GET['private']) && isset($_GET['uid']) ? $_GET['uid'] : -1;
 
         if ($message_to != -1)
-            $recipient = $this->userModel->loadUser('id', $message_to)[0];
+            $recipient = $this->userModel->loadUser('id', $message_to)[0] ?? false;
 
-        $users = $this->userModel->loadUsers();
-
+        $users = $this->userModel->loadUsers($_SESSION['logged_user']['id']);
 
         $this->data = [
             'title'=>'Chat',
@@ -50,6 +50,31 @@ class HomeController extends Controller{
     public function loadFirstMessage()
     {
         echo json_encode($this->messageModel->loadFirstMessage($_GET['message_from'], $_GET['message_to']), JSON_HEX_QUOT | JSON_HEX_TAG);
+    }
+
+    public function deleteMessage(){
+
+        Middleware::Authentication('user');
+
+        $id = htmlspecialchars(trim($_POST['id']));
+        if (empty($id)) {
+            $response = [
+                'success' => false,
+                'message' => 'No message.'
+            ];
+
+            echo json_encode($response);
+            die;
+        }
+
+        if ($this->messageModel->deleteMessage($id)){
+            $response = [
+                'success'=>true
+            ];
+
+            echo json_encode($response);
+            die;
+        }
     }
 
 }
