@@ -6,7 +6,7 @@ use App\Core\Model;
 
 class UserModel extends Model
 {
-    public function loadUsers($currentUserId): array
+    public function loadUsers(): array
     {
         try {
             $stmt = $this->pdo->query("SELECT user_name, id FROM user");

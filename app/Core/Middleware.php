@@ -4,7 +4,7 @@ namespace App\Core;
 
 abstract class Middleware
 {
-    public static function Authentication($guard='guest'): void
+    public static function Authentication($guard='guest', $userId=false): void
     {
         switch ($guard){
             case 'guest':
@@ -15,19 +15,19 @@ abstract class Middleware
             case 'user':
                 if (!isset($_SESSION['logged_user']))
                     header('Location: ./');
+
+                if ($userId && $userId !== $_SESSION['logged_user']['id']){
+                    header($_SERVER['SERVER_PROTOCOL'] . ' 405 Method Not Allowed');
+                    exit;
+                }
                 break;
         }
     }
 
     public static function Csrf(){
         if (!isset($_POST['_token']) || $_POST['_token']!==$_SESSION['_token']){
-            $response = [
-                'success' => false,
-                'message' => 'Invalid CSRF token.'
-            ];
-
-            echo json_encode($response);
-            die;
+            header($_SERVER['SERVER_PROTOCOL'] . ' 405 Method Not Allowed');
+            exit;
         }
     }
 }

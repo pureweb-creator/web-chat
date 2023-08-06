@@ -20,7 +20,7 @@ class HomeController extends Controller{
         $this->messageModel = new MessageModel($this->logger);
     }
 
-    public function index()
+    public function index(): void
     {
         // check user role
         if (!isset($_SESSION['logged_user']))
@@ -31,7 +31,7 @@ class HomeController extends Controller{
         if ($message_to != -1)
             $recipient = $this->userModel->loadUser('id', $message_to)[0] ?? false;
 
-        $users = $this->userModel->loadUsers($_SESSION['logged_user']['id']);
+        $users = $this->userModel->loadUsers();
 
         $this->data = [
             'title'=>'Chat',
@@ -43,26 +43,48 @@ class HomeController extends Controller{
 		echo $this->view->render('index.twig', $this->data);
 	}
 
-    public function loadMessages()
+    public function loadMessages(): void
     {
-        echo json_encode($this->messageModel->loadMessages($_GET['offset'], $_GET['limit'], $_GET['message_from'], $_GET['message_to']), JSON_HEX_QUOT | JSON_HEX_TAG);
+        $offset = intval(htmlspecialchars(trim($_POST['offset'])));
+        $limit = intval(htmlspecialchars(trim($_POST['limit'])));
+        $messageFrom = intval(htmlspecialchars(trim($_POST['message_from'])));
+        $messageTo = intval(htmlspecialchars(trim($_POST['message_to'])));
+
+        Middleware::Authentication('user', $messageFrom);
+        Middleware::Csrf();
+
+        if (!$messageFrom || !$messageTo)
+            Helper::response('Some fields not filled', false);
+
+        echo json_encode($this->messageModel->loadMessages($offset, $limit, $messageFrom, $messageTo), JSON_HEX_QUOT | JSON_HEX_TAG);
     }
 
-    public function loadFirstMessage()
+    public function loadFirstMessage(): void
     {
-        echo json_encode($this->messageModel->loadFirstMessage($_GET['message_from'], $_GET['message_to']), JSON_HEX_QUOT | JSON_HEX_TAG);
+        $messageFrom = intval(htmlspecialchars(trim($_POST['message_from'])));
+        $messageTo = intval(htmlspecialchars(trim($_POST['message_to'])));
+
+        Middleware::Authentication('user', $messageFrom);
+        Middleware::Csrf();
+
+        if (!$messageFrom || !$messageTo)
+            Helper::response('Some fields not filled', false);
+
+        echo json_encode($this->messageModel->loadFirstMessage($messageFrom, $messageTo), JSON_HEX_QUOT | JSON_HEX_TAG);
     }
 
-    public function deleteMessage(){
+    public function deleteMessage(): void
+    {
+        $id = intval(htmlspecialchars(trim($_POST['id'])));
+        $messageFrom = intval(htmlspecialchars(trim($_POST['message_from'])));
 
-        Middleware::Authentication('user');
+        Middleware::Authentication('user', $messageFrom);
+        Middleware::Csrf();
 
-        $id = htmlspecialchars(trim($_POST['id']));
         if (empty($id))
             Helper::response('No message.', false);
 
         if ($this->messageModel->deleteMessage($id))
             Helper::response();
     }
-
 }

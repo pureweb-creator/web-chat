@@ -10,6 +10,7 @@ ini_set('display_errors', DEBUG_MODE);
 ini_set('log_errors', 'on');
 ini_set('error_log', __DIR__.'/../debug.log');
 
+// Updates every session
 if (!isset($_SESSION['_token']))
     $_SESSION['_token'] = bin2hex(random_bytes(16));
 
