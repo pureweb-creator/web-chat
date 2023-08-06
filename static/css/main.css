@@ -265,6 +265,12 @@ b {
   display: flex;
   align-items: flex-end;
   margin: 7px 0;
+  position: relative;
+}
+.message__item.active .message-utils {
+  opacity: 1;
+  visibility: visible;
+  transform: scale(1);
 }
 .message__item_self {
   justify-content: flex-end;
@@ -304,11 +310,6 @@ b {
   width: fit-content;
   position: relative;
 }
-.message__text.active .message-utils {
-  opacity: 1;
-  visibility: visible;
-  transform: scale(1);
-}
 .message__text div {
   width: 100%;
   word-break: break-word;
@@ -320,8 +321,8 @@ b {
   background: #fff;
   border-radius: 10px;
   box-shadow: 0 1px 5px -1px rgba(0, 0, 0, 0.2117647059);
-  left: 15px;
-  top: 30px;
+  left: -260px;
+  bottom: 0;
   z-index: 2;
   opacity: 0;
   visibility: hidden;
@@ -330,6 +331,7 @@ b {
   position: absolute;
 }
 .message-utils__item {
+  cursor: pointer;
   display: flex;
   align-items: center;
   margin: 20px;
@@ -365,7 +367,8 @@ b {
 
 .footer {
   padding-top: 5px;
-  width: 55%;
+  width: 100%;
+  max-width: 500px;
   margin-left: auto;
   margin-right: auto;
   margin-bottom: 25px;

@@ -1,118 +1,22 @@
-{% include 'inc/header.twig' with {'title': title} %}
-
-<main class="app app_home" id="app" @keydown.ctrl.enter="send">
-    <div class="container">
-        <div class="wrapper">
-            <ul class="users">
-                <li class="users__item users__item_saved">
-                    <a class="users__link {% if session.logged_user.id == message_to.id %}active{% endif %}" href="{{ home_url }}?private=true&uid={{session.logged_user.id}}">
-                        <svg class="users__userpic" xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" width="24px" height="24px">    <path d="M 6 2 C 5.861875 2 5.7278809 2.0143848 5.5976562 2.0410156 C 4.686084 2.2274316 4 3.033125 4 4 L 4 22 L 12 19 L 20 22 L 20 4 C 20 3.8625 19.985742 3.7275391 19.958984 3.5976562 C 19.799199 2.8163086 19.183691 2.2008008 18.402344 2.0410156 C 18.272119 2.0143848 18.138125 2 18 2 L 6 2 z"/></svg>
-                        <span class="users__label">Saved Messages</span>
-                    </a>
-                </li>
-
-                {% for user in users %}
-                    {% if user.id != session.logged_user.id %}
-                        <li class="users__item">
-                            <a class="users__link {% if user.id == message_to.id %}active{% endif %}" href="{{ home_url }}?private=true&uid={{user.id}}">
-                                <img class="users__userpic" src="{{ home_url }}/static/img/user_3177440.png" alt="user picture">
-                                <span class="users__label">{{ user.user_name }}</span>
-                                <span class="users__label">{{ user.message_text }}</span>
-                            </a>
-                        </li>
+{% extends "base.twig" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+    <main class="app app_home" id="app" @keydown.ctrl.enter="send">
+        <div class="container">
+            <div class="wrapper">
+                {% include 'components/sidebar.twig' %}
+                <section class="main-window">
+                    {% if message_to != false %}
+                        {% include 'components/header.twig' %}
+                        {% include 'components/body.twig' %}
+                        {% include 'components/footer.twig' %}
+                    {% else %}
+                        <div class="empty-message">
+                            Select chat to start messaging
+                        </div>
                     {% endif %}
-                {% endfor %}
-            </ul>
-            <section class="main-window">
-                {% if message_to != false %}
-                    <header class="recipient-panel">
-                        {% if session.logged_user.id == message_to.id %}
-                            <div class="recipient-panel__info">
-                                <img class="recipient-panel__userpic" src="{{ home_url }}/static/img/user_3177440.png" alt="user picture">
-                                <p>Saved messages</p>
-                            </div>
-                        {% else %}
-                            <div>
-                                <p class="recipient-panel__username">{{ message_to.user_name }}</p>
-                                <p class="recipient-panel__useremail">{{ message_to.email }}</p>
-                            </div>
-                        {% endif %}
-
-                        <a href="{{ home_url }}/logout">
-                            <svg class="logout-icon" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M502.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-128-128c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L402.7 224 192 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l210.7 0-73.4 73.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l128-128zM160 96c17.7 0 32-14.3 32-32s-14.3-32-32-32L96 32C43 32 0 75 0 128L0 384c0 53 43 96 96 96l64 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-64 0c-17.7 0-32-14.3-32-32l0-256c0-17.7 14.3-32 32-32l64 0z"/></svg>
-                        </a>
-                    </header>
-                    <section class="app-body" ref="chatBody" @scroll="loadMessages">
-                        <ul class="messages">
-                            <li
-                                    v-for="(message, index) in messages"
-                                    :key="index"
-                                    :id="index"
-                                    :message_id="message.message_id"
-                                    class="message__item message"
-                                    :class="{
-                                        'message__item_self': message.message_from == '{{ session.logged_user.id }}'
-                                    }">
-                                <img class="message__userpic" src="{{ home_url }}/static/img/user_3177440.png" alt="user picture">
-
-                                <a
-                                        :href="'#'+index"
-                                        class="message__text"
-                                        @click.prevent="activeItem = activeItem == index ? null : index"
-                                        :class="{
-                                            'message__text_big': message.message_text.length >= 74,
-                                            'active': index === activeItem
-                                        }"
-                                >
-                                    <div v-html='message.message_text+"<span>"+getTimeFromDateTime(message.message_pub_date)+"</span>"'>
-
-                                    </div>
-
-                                    <ul class="message-utils">
-                                        <li class="message-utils__item message-utils__copy_msg_text" @click="copyToCliptray(message.message_text)">
-                                            <svg class="message-utils__icon" xmlns="http://www.w3.org/2000/svg" height="18px" width="18px" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M384 336H192c-8.8 0-16-7.2-16-16V64c0-8.8 7.2-16 16-16l140.1 0L400 115.9V320c0 8.8-7.2 16-16 16zM192 384H384c35.3 0 64-28.7 64-64V115.9c0-12.7-5.1-24.9-14.1-33.9L366.1 14.1c-9-9-21.2-14.1-33.9-14.1H192c-35.3 0-64 28.7-64 64V320c0 35.3 28.7 64 64 64zM64 128c-35.3 0-64 28.7-64 64V448c0 35.3 28.7 64 64 64H256c35.3 0 64-28.7 64-64V416H272v32c0 8.8-7.2 16-16 16H64c-8.8 0-16-7.2-16-16V192c0-8.8 7.2-16 16-16H96V128H64z"/></svg>
-                                            Copy message text
-                                        </li>
-                                        <li class="message-utils__item message-utils__delete" @click="deleteMessage(index, message.message_id)">
-                                            <svg class="message-utils__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="20px" height="20px"><path d="M 20.5 4 A 1.50015 1.50015 0 0 0 19.066406 6 L 14.640625 6 C 12.803372 6 11.082924 6.9194511 10.064453 8.4492188 L 7.6972656 12 L 7.5 12 A 1.50015 1.50015 0 1 0 7.5 15 L 8.2636719 15 A 1.50015 1.50015 0 0 0 8.6523438 15.007812 L 11.125 38.085938 C 11.423352 40.868277 13.795836 43 16.59375 43 L 31.404297 43 C 34.202211 43 36.574695 40.868277 36.873047 38.085938 L 39.347656 15.007812 A 1.50015 1.50015 0 0 0 39.728516 15 L 40.5 15 A 1.50015 1.50015 0 1 0 40.5 12 L 40.302734 12 L 37.935547 8.4492188 C 36.916254 6.9202798 35.196001 6 33.359375 6 L 28.933594 6 A 1.50015 1.50015 0 0 0 27.5 4 L 20.5 4 z M 14.640625 9 L 33.359375 9 C 34.196749 9 34.974746 9.4162203 35.439453 10.113281 L 36.697266 12 L 11.302734 12 L 12.560547 10.113281 A 1.50015 1.50015 0 0 0 12.5625 10.111328 C 13.025982 9.4151428 13.801878 9 14.640625 9 z M 11.669922 15 L 36.330078 15 L 33.890625 37.765625 C 33.752977 39.049286 32.694383 40 31.404297 40 L 16.59375 40 C 15.303664 40 14.247023 39.049286 14.109375 37.765625 L 11.669922 15 z"/></svg>
-                                            Delete
-                                        </li>
-                                    </ul>
-                                </a>
-                            </li>
-                        </ul>
-                    </section>
-                    <footer class="footer" ref="footer">
-                        <form class="form form_chat" @submit.prevent="send">
-                            <div class="send-message-utils">
-                                <svg @click="showEmojiPicker = !showEmojiPicker" class="emoji-picker-btn" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                                    <path fill="#c4c4c4" v-if="!showEmojiPicker" d="M130.7 313.9C126.5 300.4 137.8 288 151.1 288H364.5C378.7 288 389.9 300.4 385.8 313.9C368.1 368.4 318.2 408 258.2 408C198.2 408 147.5 368.4 130.7 313.9V313.9zM208.4 192C208.4 209.7 194 224 176.4 224C158.7 224 144.4 209.7 144.4 192C144.4 174.3 158.7 160 176.4 160C194 160 208.4 174.3 208.4 192zM304.4 192C304.4 174.3 318.7 160 336.4 160C354 160 368.4 174.3 368.4 192C368.4 209.7 354 224 336.4 224C318.7 224 304.4 209.7 304.4 192zM512 256C512 397.4 397.4 512 256 512C114.6 512 0 397.4 0 256C0 114.6 114.6 0 256 0C397.4 0 512 114.6 512 256zM256 48C141.1 48 48 141.1 48 256C48 370.9 141.1 464 256 464C370.9 464 464 370.9 464 256C464 141.1 370.9 48 256 48z"/>
-                                    <path fill="#000" v-if="showEmojiPicker" d="M130.7 313.9C126.5 300.4 137.8 288 151.1 288H364.5C378.7 288 389.9 300.4 385.8 313.9C368.1 368.4 318.2 408 258.2 408C198.2 408 147.5 368.4 130.7 313.9V313.9zM208.4 192C208.4 209.7 194 224 176.4 224C158.7 224 144.4 209.7 144.4 192C144.4 174.3 158.7 160 176.4 160C194 160 208.4 174.3 208.4 192zM304.4 192C304.4 174.3 318.7 160 336.4 160C354 160 368.4 174.3 368.4 192C368.4 209.7 354 224 336.4 224C318.7 224 304.4 209.7 304.4 192zM512 256C512 397.4 397.4 512 256 512C114.6 512 0 397.4 0 256C0 114.6 114.6 0 256 0C397.4 0 512 114.6 512 256zM256 48C141.1 48 48 141.1 48 256C48 370.9 141.1 464 256 464C370.9 464 464 370.9 464 256C464 141.1 370.9 48 256 48z"/>
-                                </svg>
-                            </div>
-
-                            <p class="form__input form__message-input" placeholder="Type a message..." ref="textInput" contenteditable @input="onInput"></p>
-                            <input type="hidden" name="message_from" id="messageFrom" value="{{ session.logged_user.id }}">
-                            <input type="hidden" name="message_to" id="messageTo" value="{{ message_to.id }}">
-
-                            <button v-show="messageNotEmpty" class="form__send-btn" type="submit">
-                                <img class="form__send-icon" src="static/img/icons8-sent-96.png" alt="send message button">
-                            </button>
-                        </form>
-                        <emoji-picker
-                                class="light"
-                                v-if="showEmojiPicker"
-                                @emoji-click="getEmoji"
-                        ></emoji-picker>
-                    </footer>
-                {% else %}
-                    <div class="empty-message">
-                        Select chat to start messaging
-                    </div>
-                {% endif %}
-            </section>
+                </section>
+            </div>
         </div>
-    </div>
-</main>
-
-{% include 'inc/footer.twig' with {'title': title} %}
+    </main>
+{% endblock %}

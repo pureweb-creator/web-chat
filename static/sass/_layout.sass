@@ -112,6 +112,11 @@
   display: flex
   align-items: flex-end
   margin: 7px 0
+  position: relative
+  &.active .message-utils
+    opacity: 1
+    visibility: visible
+    transform: scale(1)
   &_self
     justify-content: flex-end
     .message__userpic
@@ -142,10 +147,6 @@
   padding: 8px 13px 7px 13px
   width: fit-content
   position: relative
-  &.active .message-utils
-    opacity: 1
-    visibility: visible
-    transform: scale(1)
   div
     width: 100%
     word-break: break-word
@@ -157,8 +158,8 @@
   border-radius: $radius
   box-shadow: $shadow
   //padding: 10px 15px
-  left: 15px
-  top: 30px
+  left: -260px
+  bottom: 0
   z-index: 2
   opacity: 0
   visibility: hidden
@@ -166,6 +167,7 @@
   transform: scale(.8)
   position: absolute
   &__item
+    cursor: pointer
     display: flex
     align-items: center
     margin: 20px
@@ -194,7 +196,8 @@
 
 .footer
   padding-top: 5px
-  width: 55%
+  width: 100%
+  max-width: 500px
   margin-left: auto
   margin-right: auto
   margin-bottom: 25px

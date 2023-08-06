@@ -1,18 +1,23 @@
-{% include 'inc/header.twig' with {'title':title} %}
-<main class="app app_auth" id="loginApp">
-    <div class="container">
-        <h1 class="title">{{ title }}</h1>
-        <form class="form form_type_auth" @submit.prevent="doLogin">
-            <input type="hidden" name="_token" value="{{ session._token }}" ref="_token">
-            <label for="tel" class="form__label">
-                <input type="email" class="form__input" v-model="email" placeholder="E-mail">
-            </label>
-            <button type="submit" class="btn form__btn">Log in now</button>
+{% extends "base.twig" %}
+{# This extends Base #}
 
-            <p class="form-help" v-if="response.success==false">[[ response.message ]]</p>
+{% block title %}{{ title }}{% endblock %}
 
-            <a href="{{ home_url }}/register" class="form__reg-link">Still don't have an account? Please, register.</a>
-        </form>
-    </div>
-</main>
-{% include 'inc/footer.twig' %}
+{% block content %}
+    <main class="app app_auth" id="loginApp">
+        <div class="container">
+            <h1 class="title">{{ title }}</h1>
+            <form class="form form_type_auth" @submit.prevent="doLogin">
+                <input type="hidden" name="_token" value="{{ session._token }}" ref="_token">
+                <label for="tel" class="form__label">
+                    <input type="email" class="form__input" v-model="email" placeholder="E-mail">
+                </label>
+                <button type="submit" class="btn form__btn">Log in now</button>
+
+                <p class="form-help" v-if="response.success==false">[[ response.message ]]</p>
+
+                <a href="{{ home_url }}/register" class="form__reg-link">Still don't have an account? Please, register.</a>
+            </form>
+        </div>
+    </main>
+{% endblock %}

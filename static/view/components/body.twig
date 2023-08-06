@@ -1,0 +1,29 @@
+<section class="app-body" ref="chatBody" @scroll="loadMessages">
+    <ul class="messages">
+        <li
+            @click.prevent="activeItem = activeItem == index ? null : index"
+            v-for="(message, index) in messages"
+            :key="index"
+            :id="index"
+            :message_id="message.message_id"
+            class="message__item message"
+            :class="{
+                'message__item_self': message.message_from == '{{ session.logged_user.id }}',
+                'active': index === activeItem
+            }
+        ">
+            <img class="message__userpic" src="{{ home_url }}/static/img/user_3177440.png" alt="user picture">
+            <a
+                :href="'#'+index"
+                class="message__text"
+                :class="{
+                    'message__text_big': message.message_text.length >= 74,
+            }">
+                <div v-html='message.message_text+"<span>"+getTimeFromDateTime(message.message_pub_date)+"</span>"'>
+
+                </div>
+                {% include 'components/utils.twig' %}
+            </a>
+        </li>
+    </ul>
+</section>

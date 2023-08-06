@@ -146,6 +146,12 @@ $(document).ready(function(){
                 }
             },
             watch: {
+                activeItem(){
+                    if (this.activeItem !== null){
+                        
+                    }
+
+                },
                 // при отравке сообщения, скроллить вниз до конца
                 scrollDownTrigger() {
                     this.$nextTick(()=>{

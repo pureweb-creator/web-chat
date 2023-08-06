@@ -1,4 +1,7 @@
-{% include 'inc/header.twig' with {'title': page_title} %}
+{% extends "base.twig" %}
+
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
 <main class="app app_auth" id="confirmApp">
     <div class="container">
         <h1 class="title">{{ title }}</h1>
@@ -19,4 +22,4 @@
         </form>
     </div>
 </main>
-{% include 'inc/footer.twig' %}
+{% endblock %}
