@@ -57,7 +57,7 @@ $(document).ready(function(){
             })
                 .then(response=>{
 
-                    if (response.success)
+                    if (response.data.length)
                         this.messages = response.data.reverse()
 
                     // скроллим сразу все вниз при загрузке
