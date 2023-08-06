@@ -2,6 +2,7 @@
 namespace App\Controllers;
 
 use App\Core\Controller;
+use App\Core\Helper;
 use App\Core\Middleware;
 use App\Models\MessageModel;
 use App\Models\UserModel;
@@ -57,24 +58,11 @@ class HomeController extends Controller{
         Middleware::Authentication('user');
 
         $id = htmlspecialchars(trim($_POST['id']));
-        if (empty($id)) {
-            $response = [
-                'success' => false,
-                'message' => 'No message.'
-            ];
+        if (empty($id))
+            Helper::response('No message.', false);
 
-            echo json_encode($response);
-            die;
-        }
-
-        if ($this->messageModel->deleteMessage($id)){
-            $response = [
-                'success'=>true
-            ];
-
-            echo json_encode($response);
-            die;
-        }
+        if ($this->messageModel->deleteMessage($id))
+            Helper::response();
     }
 
 }

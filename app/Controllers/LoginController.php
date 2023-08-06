@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Core\Controller;
+use App\Core\Helper;
 use App\Models\UserModel;
 use App\Core\Middleware;
 
@@ -35,31 +36,14 @@ class LoginController extends Controller
         Middleware::Csrf();
 
         $email = htmlspecialchars(trim($_POST['email']));
-        $response = [];
 
-        if (empty($email)) {
-            $response = [
-                'success' => false,
-                'message' => 'No email.'
-            ];
+        if (empty($email))
+            Helper::response('No email.', false);
 
-            echo json_encode($response);
-            die;
-        }
+        if (!$this->userModel->loadUser('email', $email))
+            Helper::response('User with that email doesn\'t exists.', false);
 
-        if (!$this->userModel->loadUser('email', $email)) {
-            $response = [
-                'success' => false,
-                'message' => 'User with that email doesn\'t exists.'
-            ];
-
-            echo json_encode($response);
-            die;
-        }
-
-        echo json_encode([
-            'success' => true
-        ]);
+        Helper::response();
     }
 }
 

@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Core\Controller;
+use App\Core\Helper;
 use App\Models\UserModel;
 use App\Core\Middleware;
 
@@ -36,58 +37,21 @@ class RegisterController extends Controller
         $name = htmlspecialchars(trim($_POST['name']));
         $email = htmlspecialchars(trim($_POST['email']));
 
-        if (empty($name)) {
-            $response = [
-                'success' => false,
-                'message' => 'No name.'
-            ];
+        if (empty($name))
+            Helper::response('No name', false);
 
-            echo json_encode($response);
-            die;
-        }
+        if (empty($email))
+            Helper::response('No email.', false);
 
-        if (empty($email)) {
-            $response = [
-                'success' => false,
-                'message' => 'No email.'
-            ];
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL))
+            Helper::response('Wrong email.', false);
 
-            echo json_encode($response);
-            die;
-        }
+        if ($this->userModel->loadUser('email', $email))
+            Helper::response('User with that email already exists.', false);
 
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $response = [
-                'success' => false,
-                'message' => 'Wrong email.'
-            ];
+        if (!$this->userModel->addUser($email, $name))
+            Helper::response('Unexpected error.', false);
 
-            echo json_encode($response);
-            die;
-        }
-
-        if ($this->userModel->loadUser('email', $email)) {
-            $response = [
-                'success' => false,
-                'message' => 'User with that email already exists.'
-            ];
-
-            echo json_encode($response);
-            die;
-        }
-
-        if (!$this->userModel->addUser($email, $name)){
-            $response = [
-                'success' => false,
-                'message' => 'Unexpected error.'
-            ];
-
-            echo json_encode($response);
-            die;
-        }
-
-        echo json_encode([
-            'success' => true
-        ]);
+        Helper::response();
     }
 }
