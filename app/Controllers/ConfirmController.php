@@ -6,6 +6,7 @@ use App\Core\Controller;
 use App\Core\Helper;
 use App\Models\UserModel;
 use App\Core\Middleware;
+use PHPMailer\PHPMailer\PHPMailer;
 
 class ConfirmController extends Controller
 {
@@ -57,12 +58,30 @@ class ConfirmController extends Controller
     public function sendConfirmation($email): void
     {
         $confirmation_code = rand(10000,99999);
+        $this->userModel->updateConfirmationCode($email, $confirmation_code);
 
-        if (!$this->userModel->updateConfirmationCode($email, $confirmation_code))
-            Helper::response('Unexpected error.', false, true);
+        $mail = new PHPMailer();
+        try{
+            $mail->isSMTP();
+            $mail->Host       = GOOGLE_SMTP_HOST;
+            $mail->SMTPAuth   = true;
+            $mail->Username   = GOOGLE_SMTP_USERNAME;
+            $mail->Password   = GOOGLE_SMTP_PASSWORD;
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+            $mail->Port       = GOOGLE_SMTP_SSL_PORT;
 
-        $headers = "From: no-reply@chat.com;\nContent-type: text/html charset=utf-8\nReply-to: no-reply@chat.com";
-        if (!@mail($email, "=?UTF-8?B?".base64_encode("Подтверждение")."?=","Your confimation code is: <b>$confirmation_code</b>", $headers))
+            $mail->setFrom(GOOGLE_SMTP_USERNAME);
+            $mail->addAddress($email);
+            $mail->addReplyTo(GOOGLE_SMTP_USERNAME);
+
+            $mail->isHTML();
+            $mail->Subject = "E-mail confirmation";
+            $mail->Body = "<h1><strong>$confirmation_code</strong></h1>";
+            $mail->send();
+
+        } catch (\Exception $e){
             Helper::response('Email does not sent. Please, try again later.', false, true);
+            $this->logger->error("Message could not be sent. Mail error: {$mail->ErrorInfo}");
+        }
     }
 }
