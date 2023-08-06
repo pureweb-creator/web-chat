@@ -1,6 +1,5 @@
 FROM php:8.2-fpm
 
-
 # install composer
 RUN cd /usr/bin && curl -s http://getcomposer.org/installer | php && ln -s /usr/bin/composer.phar /usr/bin/composer
 RUN apt-get update \
@@ -17,3 +16,8 @@ RUN apt-get update \
 RUN docker-php-ext-configure pcntl --enable-pcntl \
   && docker-php-ext-install \
     pcntl
+
+COPY entrypoint.sh /
+RUN chmod +x /entrypoin.sh
+EXPOSE 8000
+ENTRYPOINT ["/entrypoint.sh"]
