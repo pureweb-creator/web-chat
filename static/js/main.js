@@ -56,7 +56,9 @@ $(document).ready(function(){
                 data: formData
             })
                 .then(response=>{
-                    this.messages = response.data.reverse()
+
+                    if (response.success)
+                        this.messages = response.data.reverse()
 
                     // скроллим сразу все вниз при загрузке
                     this.scrollDownTrigger = !this.scrollDownTrigger
