@@ -16,8 +16,3 @@ RUN apt-get update \
 RUN docker-php-ext-configure pcntl --enable-pcntl \
   && docker-php-ext-install \
     pcntl
-
-COPY entrypoint.sh /
-RUN chmod +x /entrypoin.sh
-EXPOSE 8000
-ENTRYPOINT ["/entrypoint.sh"]

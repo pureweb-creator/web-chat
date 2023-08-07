@@ -39,9 +39,9 @@ return
         'docker' => [
             'adapter' => 'mysql',
             'host' => 'mysql',
-            'name' => 'chat_docker_db',
-            'user' => 'root',
-            'pass' => 'root',
+            'name' => 'chat_db',
+            'user' => 'mysql_user',
+            'pass' => '123',
             'port' => '3306',
             'charset' => 'utf8',
         ]

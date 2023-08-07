@@ -2,14 +2,19 @@ version: '3.8'
 
 # Services
 services:
+
   # NGINX Service
   nginx:
     image: nginx
+    container_name: nginx-web-chat
+    restart: always
     ports:
       - 80:80
+      - 8000:80
     volumes:
       - ./:/var/www/web-chat.loc
       - ./.docker/nginx/conf.d:/etc/nginx/conf.d
+      - ./.docker/nginx/logs:/var/logs/nginx
     depends_on:
       - php
 
@@ -17,39 +22,52 @@ services:
   php:
     build: ./.docker/php
     working_dir: /var/www/web-chat.loc
+    container_name: php-web-chat
     volumes:
       - ./:/var/www/web-chat.loc
     depends_on:
-      mysql:
-        condition: service_healthy
+      - mysql
+
+  # WebSocket Service
+  ws:
+    build: ./.docker/ws
+    working_dir: /var/www/web-chat.loc
+    container_name: ws-web-chat
+    entrypoint: ["php", "app/Services/websocket.php", "start"]
+    volumes:
+      - ./:/var/www/web-chat.loc
+    depends_on:
+      - php
+    expose:
+      - 8282
+
   # MySQL Service
   mysql:
-    image: mysql
+    env_file:
+      - .env
+    image: mysql:latest
+    restart: always
+    container_name: mysql-web-chat
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
-      MYSQL_ROOT_HOST: "%"
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
       - ./.docker/mysql/my.cnf:/etc/mysql/my.cnf
       - mysqldata:/var/lib/mysql
-    healthcheck:
-      test: mysqladmin ping -h 127.0.0.1 -u root --password=$$MYSQL_ROOT_PASSWORD
-      interval: 5s
-      retries: 10
 
   # PhpMyAdmin Service
   phpmyadmin:
     image: phpmyadmin
-    restart: always
+    container_name: pma-web-chat
     ports:
       - 8080:80
     environment:
       - PMA_ARBITRARY=1
       - PMA_HOST=mysql
     depends_on:
-      mysql:
-        condition: service_healthy
+      - mysql
 
 # Volumes
 volumes:

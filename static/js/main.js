@@ -67,7 +67,7 @@ $(document).ready(function(){
                 })
 
             // opens websocket connection
-            this.ws = new WebSocket(`ws://127.0.0.1:8000/ws/?user=${$('#messageFrom').val() ?? ''}`);
+            this.ws = new WebSocket(`ws://127.0.0.1:8000/ws?user=${$('#messageFrom').val() ?? ''}`);
         },
         methods: {
             onInput(e) {
