@@ -138,7 +138,7 @@ b {
 }
 
 .users {
-  width: 400px;
+  width: 350px;
   flex-shrink: 0;
   background: #fff;
   overflow-y: hidden;
@@ -316,13 +316,13 @@ b {
 }
 
 .message-utils {
-  max-width: 250px;
-  width: 250px;
+  max-width: 200px;
+  width: 200px;
   background: #fff;
   border-radius: 10px;
   box-shadow: 0 1px 5px -1px rgba(0, 0, 0, 0.2117647059);
-  left: -260px;
-  bottom: 0;
+  right: 20px;
+  bottom: -85px;
   z-index: 2;
   opacity: 0;
   visibility: hidden;
@@ -334,8 +334,11 @@ b {
   cursor: pointer;
   display: flex;
   align-items: center;
-  margin: 20px;
+  padding: 10px 15px;
   color: #707579;
+}
+.message-utils__item:hover {
+  background: rgba(205, 205, 208, 0.2);
 }
 .message-utils__item path {
   fill: #707579;

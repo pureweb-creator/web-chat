@@ -4,8 +4,8 @@ namespace App\Controllers;
 
 use App\Core\Controller;
 use App\Core\Helper;
-use App\Models\UserModel;
 use App\Core\Middleware;
+use App\Models\UserModel;
 use PHPMailer\PHPMailer\PHPMailer;
 
 class ConfirmController extends Controller
@@ -57,7 +57,7 @@ class ConfirmController extends Controller
 
     public function sendConfirmation($email): void
     {
-        $confirmation_code = rand(10000,99999);
+        $confirmation_code = rand(10000, 99999);
         $this->userModel->updateConfirmationCode($email, $confirmation_code);
 
         $mail = new PHPMailer();

@@ -1,4 +1,4 @@
-<section class="app-body" ref="chatBody" @scroll="loadMessages">
+<section class="app-body" ref="chatBody" @scroll="loadMessages" @click.self="activeItem=null, showEmojiPicker = false">
     <ul class="messages">
         <li
             @click.prevent="activeItem = activeItem == index ? null : index"

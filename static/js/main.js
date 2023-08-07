@@ -27,47 +27,12 @@ $(document).ready(function(){
             this._token = document.querySelector('meta[name="_token"]').content
             axios.defaults.headers.common['X-CSRF-TOKEN'] = this._token;
 
-            let formData = new FormData()
-            formData.append('message_to', $('#messageTo').val() ?? '')
-            formData.append('message_from', $('#messageFrom').val() ?? '')
-            formData.append('_token', this._token)
-
-            // Get first message ID
-            axios({
-                method: "POST",
-                url: "./home/loadFirstMessage",
-                data: formData
-            })
-                .then(response=>{
-                    this.firstMessageID = response.data[0]?.id
-                })
-
-            // Get first pack of messages
-            formData = new FormData()
-            formData.append('offset', this.loading_offset)
-            formData.append('limit', this.limit)
-            formData.append('message_to', $('#messageTo').val() ?? '')
-            formData.append('message_from', $('#messageFrom').val() ?? '')
-            formData.append('_token', this._token)
-
-            axios({
-                method: "POST",
-                url: "./home/loadMessages",
-                data: formData
-            })
-                .then(response=>{
-
-                    if (response.data.length)
-                        this.messages = response.data.reverse()
-
-                    // скроллим сразу все вниз при загрузке
-                    this.scrollDownTrigger = !this.scrollDownTrigger
-
-                    this.loading_offset+=100
-                })
+            this.loadFirstPack()
 
             // opens websocket connection
             this.ws = new WebSocket(`ws://127.0.0.1:8000/ws?user=${$('#messageFrom').val() ?? ''}`);
+            // Listen websocket for a response
+            this.wsListen()
         },
         methods: {
             onInput(e) {
@@ -77,64 +42,38 @@ $(document).ready(function(){
                 this.scrollDownTrigger = !this.scrollDownTrigger
             },
 
-            send: function (event){
-
+            addMessage: function (event){
                 if (this.message.message_text.trim().length === 0)
                     return
 
-                // скроллим до конца вниз
                 this.scrollDownTrigger = !this.scrollDownTrigger
 
                 this.message.message_from = $('#messageFrom').val()
                 this.message.message_to = $('#messageTo').val()
 
-                this.ws.send(JSON.stringify(this.message))
-                this.ws.onmessage = response => {
-                    let parsed_response = JSON.parse(response.data);
+                this.ws.send(JSON.stringify({
+                    'action': 'addMessage',
+                    'message': JSON.stringify(this.message)
+                }))
 
-                    this.messages.push(parsed_response[0])
-
-                    this.loading_offset = 100
-
-                    this.scrollDownTrigger = !this.scrollDownTrigger
-
-                    this.message.message_text = ""
-                    this.$refs.textInput.innerText = ""
-                }
-            },
-
-            copyToCliptray(msgText){
-                let strippedText = msgText.replace(/(<([^>]+)>)/gi, "")
-                navigator.clipboard.writeText(strippedText)
+                // hide emoji picker if was selected
+                if (this.showEmojiPicker)
+                    this.showEmojiPicker = false
             },
 
             deleteMessage(msgIdx, msgId){
-                let formData = new FormData()
-                formData.append('id', msgId)
-                formData.append('_token', this._token)
-                formData.append('message_from', $('#messageFrom').val() ?? '')
-
-                axios({
-                    method: "post",
-                    url: "./home/deleteMessage",
-                    data: formData
-                })
-                    .then(
-                        response=>{
-                            this.response = response.data
-
-                            // if deleted in db, then delete in array in frontend
-                            if (this.response.success === true){
-                                if (msgIdx > -1)
-                                    this.messages.splice(msgIdx, 1)
-                            }
-                        }
-                    )
+                this.ws.send(JSON.stringify({
+                    'action': 'deleteMessage',
+                    'message': JSON.stringify({
+                        'message_id': msgId,
+                        'message_from': $('#messageFrom').val() ?? '',
+                        'message_to': $('#messageTo').val() ?? ''
+                    })
+                }))
             },
 
             // Load new pack of messages on scroll up
             loadMessages: function (){
-
                 // check if we are scrolling up
                 if (this.$refs.chatBody.scrollTop === 0) {
 
@@ -179,6 +118,64 @@ $(document).ready(function(){
 
             getEmoji: function(e){
                 this.$refs.textInput.innerText += e.detail.unicode
+                this.message.message_text += e.detail.unicode
+            },
+
+            copyToCliptray(msgText){
+                let strippedText = msgText.replace(/(<([^>]+)>)/gi, "")
+                navigator.clipboard.writeText(strippedText)
+            },
+
+            // listen for a websocket response
+            wsListen: function (){
+                this.ws.onmessage = response => {
+                    let parsed_response = JSON.parse(response.data)
+
+                    switch (parsed_response.action){
+                        case "addMessage":
+                            this.messages.push(parsed_response.data[0])
+
+                            this.loading_offset = 100
+                            this.scrollDownTrigger = !this.scrollDownTrigger
+
+                            // reset to defaults
+                            this.message.message_text = ""
+                            this.$refs.textInput.innerText = ""
+
+                            break
+
+                        case "deleteMessage":
+                            // replace existing messages array with given (with deleted items)
+                            if (parsed_response.success===true)
+                                this.messages = parsed_response.data.reverse()
+                            break
+                    }
+                }
+            },
+
+            loadFirstPack: function (){
+                // Get first pack of messages
+                formData = new FormData()
+                formData.append('offset', this.loading_offset)
+                formData.append('limit', this.limit)
+                formData.append('message_to', $('#messageTo').val() ?? '')
+                formData.append('message_from', $('#messageFrom').val() ?? '')
+                formData.append('_token', this._token)
+
+                axios({
+                    method: "POST",
+                    url: "./home/loadMessages",
+                    data: formData
+                })
+                    .then(response=>{
+                        if (response.data.length) {
+                            this.firstMessageID = response.data[response.data.length-1]?.message_id
+                            this.messages = response.data.reverse()
+                        }
+
+                        this.scrollDownTrigger = !this.scrollDownTrigger
+                        this.loading_offset+=100
+                    })
             }
         },
         watch: {

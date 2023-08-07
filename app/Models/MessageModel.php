@@ -34,31 +34,6 @@ class MessageModel extends Model
         return $result ?? false;
     }
 
-    public function loadFirstMessage($message_from, $message_to)
-    {
-        try {
-            $stmt = $this->pdo->prepare("
-                SELECT message.id FROM message
-                    LEFT JOIN user
-                        ON user.id = message.message_from
-                        WHERE (message.message_from = :message_from AND message.message_to = :message_to) OR
-                               (message.message_from = :message_to AND message.message_to = :message_from)
-                        ORDER BY message.message_pub_date
-                        LIMIT 0, 1
-            ");
-
-            $stmt->bindValue(':message_to', $message_to);
-            $stmt->bindValue(':message_from', $message_from);
-            $stmt->execute();
-            $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-
-        } catch (\PDOException $e){
-            $this->logger->critical($e->getMessage(), ['file'=>$e->getFile(),'line'=>$e->getLine()]);
-        }
-
-        return $result;
-    }
-
     public function addMessage($message): void
     {
         try {

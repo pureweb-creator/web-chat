@@ -58,33 +58,4 @@ class HomeController extends Controller{
 
         echo json_encode($this->messageModel->loadMessages($offset, $limit, $messageFrom, $messageTo), JSON_HEX_QUOT | JSON_HEX_TAG);
     }
-
-    public function loadFirstMessage(): void
-    {
-        $messageFrom = intval(htmlspecialchars(trim($_POST['message_from'])));
-        $messageTo = intval(htmlspecialchars(trim($_POST['message_to'])));
-
-        Middleware::Authentication('user', $messageFrom);
-        Middleware::Csrf();
-
-        if (!$messageFrom || !$messageTo)
-            Helper::response('Some fields not filled', false);
-
-        echo json_encode($this->messageModel->loadFirstMessage($messageFrom, $messageTo), JSON_HEX_QUOT | JSON_HEX_TAG);
-    }
-
-    public function deleteMessage(): void
-    {
-        $id = intval(htmlspecialchars(trim($_POST['id'])));
-        $messageFrom = intval(htmlspecialchars(trim($_POST['message_from'])));
-
-        Middleware::Authentication('user', $messageFrom);
-        Middleware::Csrf();
-
-        if (empty($id))
-            Helper::response('No message.', false);
-
-        if ($this->messageModel->deleteMessage($id))
-            Helper::response();
-    }
 }

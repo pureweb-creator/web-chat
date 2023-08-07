@@ -1,7 +1,7 @@
 {% extends "base.twig" %}
 {% block title %}{{ title }}{% endblock %}
 {% block content %}
-    <main class="app app_home" id="app" @keydown.ctrl.enter="send">
+    <main class="app app_home" id="app" @keydown.ctrl.enter="addMessage">
         <div class="container">
             <div class="wrapper">
                 {% include 'components/sidebar.twig' %}

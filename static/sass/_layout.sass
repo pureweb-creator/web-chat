@@ -17,7 +17,7 @@
 
 
 .users
-  width: 400px
+  width: 350px
   flex-shrink: 0
   background: $panelColor
   overflow-y: hidden
@@ -152,14 +152,13 @@
     word-break: break-word
 
 .message-utils
-  max-width: 250px
-  width: 250px
+  max-width: 200px
+  width: 200px
   background: #fff
   border-radius: $radius
   box-shadow: $shadow
-  //padding: 10px 15px
-  left: -260px
-  bottom: 0
+  right: 20px
+  bottom: -85px
   z-index: 2
   opacity: 0
   visibility: hidden
@@ -170,7 +169,9 @@
     cursor: pointer
     display: flex
     align-items: center
-    margin: 20px
+    padding: 10px 15px
+    &:hover
+      background: rgba($panelBorderColor, 0.2)
     color: $secondaryColor
     path
       fill: $secondaryColor
