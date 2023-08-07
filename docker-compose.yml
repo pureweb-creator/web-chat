@@ -14,30 +14,20 @@ services:
     volumes:
       - ./:/var/www/web-chat.loc
       - ./.docker/nginx/conf.d:/etc/nginx/conf.d
-      - ./.docker/nginx/logs:/var/logs/nginx
     depends_on:
       - php
 
   # PHP Service
   php:
+    image: php-web-chat
     build: ./.docker/php
     working_dir: /var/www/web-chat.loc
     container_name: php-web-chat
     volumes:
       - ./:/var/www/web-chat.loc
     depends_on:
-      - mysql
-
-  # WebSocket Service
-  ws:
-    build: ./.docker/ws
-    working_dir: /var/www/web-chat.loc
-    container_name: ws-web-chat
-    entrypoint: ["php", "app/Services/websocket.php", "start"]
-    volumes:
-      - ./:/var/www/web-chat.loc
-    depends_on:
-      - php
+      mysql:
+        condition: service_healthy
     expose:
       - 8282
 
@@ -56,6 +46,10 @@ services:
     volumes:
       - ./.docker/mysql/my.cnf:/etc/mysql/my.cnf
       - mysqldata:/var/lib/mysql
+    healthcheck:
+      test: mysqladmin ping -h 127.0.0.1 -u root --password=$$MYSQL_ROOT_PASSWORD
+      interval: 5s
+      retries: 10
 
   # PhpMyAdmin Service
   phpmyadmin:
@@ -67,7 +61,8 @@ services:
       - PMA_ARBITRARY=1
       - PMA_HOST=mysql
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
 
 # Volumes
 volumes:

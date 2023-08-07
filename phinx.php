@@ -1,5 +1,8 @@
 <?php
 
+// load our environment files - used to store credentials & configuration
+Dotenv\Dotenv::createImmutable(__DIR__)->load();
+
 return
 [
     'paths' => [
@@ -11,37 +14,28 @@ return
         'default_environment' => 'development',
         'production' => [
             'adapter' => 'mysql',
-            'host' => 'localhost',
-            'name' => 'chat_production_db',
-            'user' => 'root',
+            'host' => '',
+            'name' => '',
+            'user' => '',
             'pass' => '',
             'port' => '3306',
             'charset' => 'utf8',
         ],
         'development' => [
             'adapter' => 'mysql',
-            'host' => 'localhost',
-            'name' => 'chat_development_db',
-            'user' => 'root',
-            'pass' => '',
+            'host' => $_ENV['MYSQL_HOST_ALIAS'],
+            'name' => $_ENV['MYSQL_DATABASE'],
+            'user' => $_ENV['MYSQL_USER'],
+            'pass' => $_ENV['MYSQL_PASSWORD'],
             'port' => '3306',
             'charset' => 'utf8',
         ],
         'testing' => [
             'adapter' => 'mysql',
-            'host' => 'localhost',
-            'name' => 'chat_testing_db',
-            'user' => 'root',
+            'host' => '',
+            'name' => '',
+            'user' => '',
             'pass' => '',
-            'port' => '3306',
-            'charset' => 'utf8',
-        ],
-        'docker' => [
-            'adapter' => 'mysql',
-            'host' => 'mysql',
-            'name' => 'chat_db',
-            'user' => 'mysql_user',
-            'pass' => '123',
             'port' => '3306',
             'charset' => 'utf8',
         ]
