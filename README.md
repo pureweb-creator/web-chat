@@ -20,11 +20,18 @@ Then get into the php container:\
 - run migrations (only on the 1st start)  ```$ php vendor/bin/phinx migrate```
 - run seeds (optionally) ```$ php vendor/bin/phinx seed:run```
 - Then start a websocket server with
-```$ php app/Services/websocket.php start -d``` command in the same directory.
+```$ nohup php app/Services/websocket.php start &``` command in the same directory.\
+Now you can exit you bash (optionally)
 
 Finally, you have access to
 - your website - http://web-chat.loc
 - phpMyAdmin - http://127.0.0.1:8080/
+
+There is one extra step you need to take for this to work\
+Add the following line to your hosts file and save it:\
+```127.0.0.1 web-chat.loc```
+
+On UNIX-based systems (essentially Linux distributions and macOS), it is located at ```/etc/hosts```. On Windows, it should be located at ```c:\windows\system32\drivers\etc\hosts```. You will need to edit it as administrator
 
 To stop project, run:\
 ```$ docker compose down```

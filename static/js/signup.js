@@ -28,8 +28,6 @@ let signUp = new Vue({
                     response=>{
                         this.response = response.data
 
-                        console.log(response.data)
-
                         if ( this.response.success === true ) {
                             window.location.href = `./confirm?email=${this.email}`
                         }

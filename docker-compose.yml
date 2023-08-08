@@ -14,6 +14,7 @@ services:
     volumes:
       - ./:/var/www/web-chat.loc
       - ./.docker/nginx/conf.d:/etc/nginx/conf.d
+      - ./.docker/nginx/logs:/var/log/nginx
     depends_on:
       - php
 

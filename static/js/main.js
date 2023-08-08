@@ -42,12 +42,11 @@ $(document).ready(function(){
                 this.scrollDownTrigger = !this.scrollDownTrigger
             },
 
-            addMessage: function (event){
+            addMessage: function (){
                 if (this.message.message_text.trim().length === 0)
                     return
 
                 this.scrollDownTrigger = !this.scrollDownTrigger
-
                 this.message.message_from = $('#messageFrom').val()
                 this.message.message_to = $('#messageTo').val()
 
@@ -61,7 +60,7 @@ $(document).ready(function(){
                     this.showEmojiPicker = false
             },
 
-            deleteMessage(msgIdx, msgId){
+            deleteMessage(msgId){
                 this.ws.send(JSON.stringify({
                     'action': 'deleteMessage',
                     'message': JSON.stringify({
@@ -122,8 +121,18 @@ $(document).ready(function(){
             },
 
             copyToCliptray(msgText){
+                
                 let strippedText = msgText.replace(/(<([^>]+)>)/gi, "")
-                navigator.clipboard.writeText(strippedText)
+                var TempText = document.createElement("input");
+                TempText.value = strippedText;
+                document.body.appendChild(TempText);
+                TempText.select();
+                
+                document.execCommand("copy");
+                document.body.removeChild(TempText);
+                
+                // works only over https
+                // navigator.clipboard.writeText(strippedText)
             },
 
             // listen for a websocket response
