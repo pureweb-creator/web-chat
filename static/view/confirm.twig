@@ -8,11 +8,17 @@
         <form class="form form_type_auth" @submit.prevent="doConfirm">
             <input type="hidden" name="_token" value="{{ session._token }}" ref="_token">
             <input type="hidden" name="email" value="{{ email }}" ref="email">
-            <label for="tel" class="form__label">
-                <input type="number" class="form__input" placeholder="5-digit code" v-model="code">
-            </label>
 
-            <button type="submit" class="btn form__btn">Login me now!</button>
+            <div class="form__confirm_code">
+                <input
+                    type="text"
+                    v-for="(item, i) in code"
+                    v-model="code[i]"
+                    @keyup="fillCode($event, i)"
+                    class="form__input form__input_confirm_code"
+                    maxlength="5"
+                >
+            </div>
 
             {% if session.response is defined and session.response.success==false %}
                 <p class="form-help">{{ session.response.message }}</p>

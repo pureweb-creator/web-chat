@@ -492,4 +492,28 @@ emoji-picker {
   background: #fff;
 }
 
+.form__confirm_code {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin: 15px auto 15px auto;
+}
+
+.form__input_confirm_code {
+  width: 75px;
+  height: 85px;
+  font-size: 40px;
+  text-transform: uppercase;
+  text-align: center;
+  border-width: 2px;
+}
+
+.form__input_confirm_code:focus, .form__input_confirm_code:hover {
+  border-color: #e6e6e6;
+}
+
+.form__input_confirm_code.active {
+  border-color: #419FD9;
+}
+
 /*# sourceMappingURL=main.css.map */

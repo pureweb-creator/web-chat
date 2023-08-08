@@ -40,6 +40,7 @@ class ConfirmController extends Controller
 
         $email = htmlspecialchars(trim($_POST['email']));
         $code = htmlspecialchars(trim($_POST['code']));
+        $code = str_replace(',','',$code);
 
         if (empty($code))
             Helper::response('No confirmation code', false);
