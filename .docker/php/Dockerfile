@@ -23,8 +23,4 @@ WORKDIR $WORKDIR
 COPY composer.json $WORKDIR
 
 RUN composer install \
-  --ignore-platform-reqs \
-  --no-interaction \
-  --no-plugins \
-  --no-scripts \
-  --prefer-dist
+  --ignore-platform-reqs
