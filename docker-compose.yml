@@ -21,11 +21,14 @@ services:
   # PHP Service
   php:
     image: php-web-chat
-    build: ./.docker/php
+    build:
+      context: ./
+      dockerfile: .docker/php/Dockerfile
     working_dir: /var/www/web-chat.loc
     container_name: php-web-chat
     volumes:
       - ./:/var/www/web-chat.loc
+      - /var/www/web-chat.loc/vendor
     depends_on:
       mysql:
         condition: service_healthy
