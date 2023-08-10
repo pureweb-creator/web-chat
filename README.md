@@ -1,6 +1,6 @@
 ﻿# Web Chat
 
-![Screenshot](https://i.ibb.co/2jVpnKD/image-2023-08-05-19-06-55.png)
+![Screenshot](https://i.ibb.co/mTg6rKJ/Screenshot-7.png)
 
 # Description
 This web application provides online web messenger widget made as a websocket experiment.
@@ -21,7 +21,6 @@ Then get into the php container:\
 - run seeds (optionally) ```$ php vendor/bin/phinx seed:run```
 - Then start a websocket server with
 ```$ nohup php app/Services/websocket.php start &``` command in the same directory.\
-Now you can exit you bash (optionally)
 
 Finally, you have access to
 - your website - http://web-chat.loc
