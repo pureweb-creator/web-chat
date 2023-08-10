@@ -74,6 +74,7 @@ class WebsocketController extends \App\Core\Controller
                         $response = json_encode([
                             'action' => 'deleteMessage',
                             'success' => true,
+                            // return last 100 messages from conversation
                             'data' => $this->messageModel->loadMessages(0, 100, $message['message_from'], $message['message_to'])
                         ]);
 
