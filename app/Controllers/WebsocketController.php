@@ -3,17 +3,17 @@
 namespace App\Controllers;
 
 use App\Core\Helper;
-use App\Core\Middleware;
 use App\Models\MessageModel;
+use Monolog\Logger;
 use Workerman\Worker;
 
 class WebsocketController extends \App\Core\Controller
 {
     protected MessageModel $messageModel;
-    public function __construct()
+    public function __construct(Logger $logger)
     {
         parent::__construct();
-        $this->messageModel = new MessageModel($this->logger);
+        $this->messageModel = new MessageModel($logger);
     }
 
     public function listen(): void
@@ -44,9 +44,7 @@ class WebsocketController extends \App\Core\Controller
                     $message_text = nl2br($message_text);
 
                     $message['message_text'] = $message_text;
-
                     $this->messageModel->addMessage($message);
-
                     $addedMessage = $this->messageModel->loadMessages(0, 1, $message['message_from'], $message['message_to']);
 
                     $response = json_encode([

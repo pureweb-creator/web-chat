@@ -5,16 +5,21 @@ namespace App\Controllers;
 use App\Core\Controller;
 use App\Core\Helper;
 use App\Core\Middleware;
+use App\Core\View;
 use App\Models\UserModel;
+use Monolog\Logger;
 use PHPMailer\PHPMailer\PHPMailer;
 
 class ConfirmController extends Controller
 {
     protected UserModel $userModel;
-    public function __construct()
+    protected View $view;
+
+    public function __construct(View $view, Logger $logger)
     {
         parent::__construct();
-        $this->userModel = new UserModel($this->logger);
+        $this->view = $view;
+        $this->userModel = new UserModel($logger);
     }
     public function index(): void
     {

@@ -4,20 +4,25 @@ namespace App\Controllers;
 use App\Core\Controller;
 use App\Core\Helper;
 use App\Core\Middleware;
+use App\Core\View;
 use App\Models\MessageModel;
 use App\Models\UserModel;
+use Monolog\Logger;
 
 class HomeController extends Controller{
 
     protected UserModel $userModel;
     protected MessageModel $messageModel;
+    protected View $view;
 
-    public function __construct()
+    public function __construct(View $view, Logger $logger)
     {
         parent::__construct();
 
-        $this->userModel = new UserModel($this->logger);
-        $this->messageModel = new MessageModel($this->logger);
+        $this->view = $view;
+
+        $this->userModel = new UserModel($logger);
+        $this->messageModel = new MessageModel($logger);
     }
 
     public function index(): void
@@ -26,7 +31,7 @@ class HomeController extends Controller{
         if (!isset($_SESSION['logged_user']))
             header('Location: ./login');
 
-        $message_to = isset($_GET['uid']) ? $_GET['uid'] : -1;
+        $message_to = $_GET['uid'] ?? -1;
 
         if ($message_to != -1)
             $recipient = $this->userModel->loadUser('id', $message_to)[0] ?? false;
