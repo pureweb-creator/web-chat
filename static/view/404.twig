@@ -1,0 +1,11 @@
+{% extends 'base.twig' %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<main class="app app-404">
+    <div class="container">
+        <h1 class="app-404__title">{{ title }}</h1>
+        <p class="app-404__subtitle">{{ subtitle }}</p>
+        <a class="app-404__link" href="{{ home_url }}">{{ link_text }}</a>
+    </div>
+</main>
+{% endblock %}
