@@ -4,8 +4,8 @@ version: '3.8'
 services:
 
   # NGINX Service
-  nginx:
-    image: nginx
+  nginx-web-chat:
+    image: nginx:latest
     container_name: nginx-web-chat
     restart: always
     ports:
@@ -16,10 +16,12 @@ services:
       - ./.docker/nginx/conf.d:/etc/nginx/conf.d
       - ./.docker/nginx/logs:/var/log/nginx
     depends_on:
-      - php
+      - php-web-chat
+    networks:
+      - network-web-chat
 
   # PHP Service
-  php:
+  php-web-chat:
     image: php-web-chat
     build:
       context: ./
@@ -30,15 +32,32 @@ services:
       - ./:/var/www/web-chat.loc
       - /var/www/web-chat.loc/vendor
     depends_on:
-      mysql:
+      mysql-web-chat:
         condition: service_healthy
-    expose:
+    networks:
+      - network-web-chat
+
+  # WebSocket service
+  ws-web-chat:
+    image: ws-web-chat
+    build:
+      context: ./
+      dockerfile: .docker/php/Dockerfile
+    container_name: ws-web-chat
+    volumes:
+      - ./:/var/www/web-chat.loc
+      - /var/www/web-chat.loc/vendor
+    depends_on:
+      mysql-web-chat:
+        condition: service_healthy
+    entrypoint: ["php", "/var/www/web-chat.loc/websocket.php", "start"]
+    expose: 
       - 8282
+    networks:
+      - network-web-chat
 
   # MySQL Service
-  mysql:
-    env_file:
-      - .env
+  mysql-web-chat:
     image: mysql:latest
     restart: always
     container_name: mysql-web-chat
@@ -54,9 +73,13 @@ services:
       test: mysqladmin ping -h 127.0.0.1 -u root --password=$$MYSQL_ROOT_PASSWORD
       interval: 5s
       retries: 10
+    networks:
+      network-web-chat:
+        aliases:
+          - ${MYSQL_HOST_ALIAS}
 
   # PhpMyAdmin Service
-  phpmyadmin:
+  phpmyadmin-web-chat:
     image: phpmyadmin
     container_name: pma-web-chat
     ports:
@@ -65,9 +88,17 @@ services:
       - PMA_ARBITRARY=1
       - PMA_HOST=mysql
     depends_on:
-      mysql:
+      mysql-web-chat:
         condition: service_healthy
+    networks:
+      - network-web-chat
 
 # Volumes
 volumes:
   mysqldata:
+
+# Networks
+networks:
+  network-web-chat:
+    name: network-web-chat
+    driver: bridge
