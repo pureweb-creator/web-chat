@@ -12,8 +12,10 @@
                 <li class="users__item">
                     <a class="users__link {% if user.id == message_to.id %}active{% endif %}" href="{{ home_url }}?uid={{user.id}}">
                         <img class="users__userpic" src="{{ home_url }}/static/img/user_3177440.png" alt="user picture">
-                        <span class="users__label">{{ user.user_name }}</span>
-                        <span class="users__label">{{ user.message_text }}</span>
+                        <div>
+                            <p class="users__label users__name">{{ user.user_name }}</p>
+                            <p class="users__label users__email">{{ user.email }}</p>
+                        </div>
                     </a>
                 </li>
             {% endif %}

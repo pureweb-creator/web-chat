@@ -5,10 +5,11 @@
 body, html {
   padding: 0;
   margin: 0;
-  font-family: "Rubik", sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 15px;
   color: #242424;
   background: #ffe8e8;
+  scroll-behavior: smooth;
 }
 
 a, a:hover, a:active, a:focus {
@@ -22,8 +23,6 @@ ul, li {
 
 input, button {
   font-family: inherit;
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
   border-radius: 10px;
 }
 
@@ -65,6 +64,16 @@ img {
 
 b {
   font-weight: 500;
+}
+
+.v-enter-active,
+.v-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.v-enter-from,
+.v-leave-to {
+  opacity: 0;
 }
 
 .btn {
@@ -163,11 +172,14 @@ b {
 .users__link {
   display: flex;
   align-items: center;
-  padding: 7px 10px;
+  padding: 10px;
   border-radius: 10px;
 }
 .users__link.active {
   background: #419FD9;
+  color: #fff;
+}
+.users__link.active .users__email {
   color: #fff;
 }
 .users__link:not(.active):hover {
@@ -187,18 +199,29 @@ b {
   color: inherit;
   white-space: nowrap;
 }
+.users__name {
+  font-size: 16px;
+  line-height: 1.375rem;
+}
+.users__email {
+  color: #707579;
+  font-weight: 400;
+  margin-top: 5px;
+  font-size: 14px;
+}
 .users__userpic {
-  width: 50px;
-  height: 50px;
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
-  object-fit: cover;
+  -o-object-fit: cover;
+     object-fit: cover;
   margin-right: 15px;
 }
 
 .main-window {
   display: flex;
   flex-direction: column;
-  background: linear-gradient(-45deg, #35C3F3 0%, #8b9fe8 20%, #e681d8 39%, #ffa9a4 76%, #FED2CE 100%);
+  background: #8EC5FC linear-gradient(62deg, #8EC5FC 0%, #E0C3FC 100%);
   width: 100%;
   overflow: hidden;
   position: relative;
@@ -221,7 +244,8 @@ b {
   width: 42px;
   height: 42px;
   border-radius: 50%;
-  object-fit: cover;
+  -o-object-fit: cover;
+     object-fit: cover;
   margin-right: 15px;
 }
 .recipient-panel__useremail {
@@ -241,6 +265,7 @@ b {
   padding: 10px;
   height: 100%;
   overflow-y: auto;
+  scroll-behavior: smooth;
 }
 .app-body::-webkit-scrollbar {
   width: 4px;
@@ -256,7 +281,7 @@ b {
 
 .messages {
   width: 100%;
-  max-width: 500px;
+  max-width: 700px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -280,6 +305,7 @@ b {
   margin-left: 5px;
 }
 .message__item_self .message__text {
+  transition: all 0.1s ease;
   background: #FFF3D5;
   border-radius: 18px 18px 4px 18px;
 }
@@ -292,7 +318,8 @@ b {
   width: 35px;
   height: 35px;
   border-radius: 50%;
-  object-fit: cover;
+  -o-object-fit: cover;
+     object-fit: cover;
   margin-right: 5px;
   position: sticky;
   bottom: 0;
@@ -307,6 +334,8 @@ b {
   background: #fff;
   border-radius: 18px 18px 18px 4px;
   padding: 8px 13px 7px 13px;
+  box-shadow: 0 1px 2px rgba(16, 35, 47, 0.1490196078);
+  width: -moz-fit-content;
   width: fit-content;
   position: relative;
 }
@@ -371,7 +400,7 @@ b {
 .footer {
   padding-top: 5px;
   width: 100%;
-  max-width: 500px;
+  max-width: 700px;
   margin-left: auto;
   margin-right: auto;
   margin-bottom: 25px;
@@ -533,5 +562,3 @@ emoji-picker {
   margin-top: 32px;
   line-height: 150%;
 }
-
-/*# sourceMappingURL=main.css.map */
