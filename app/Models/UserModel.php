@@ -9,7 +9,7 @@ class UserModel extends Model
     public function loadUsers(): array
     {
         try {
-            $stmt = $this->pdo->query("SELECT user_name, id FROM user");
+            $stmt = $this->pdo->query("SELECT user_name, email, id FROM user");
             $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
         } catch (\PDOException $e){
@@ -61,6 +61,17 @@ class UserModel extends Model
         try {
             $stmt = $this->pdo->prepare('UPDATE user SET user.confirmed = ? WHERE user.email = ?');
             $result = $stmt->execute([$value, $email]);
+        } catch (\PDOException $e){
+            $this->logger->critical($e->getMessage());
+        }
+
+        return $result;
+    }
+
+    public function updateOnlineStatus($uid, $online){
+        try {
+            $stmt = $this->pdo->prepare('UPDATE user SET user.online = ? AND user.last_seen = now() WHERE user.id = ?');
+            $result = $stmt->execute([$online, time(), $uid]);
         } catch (\PDOException $e){
             $this->logger->critical($e->getMessage());
         }

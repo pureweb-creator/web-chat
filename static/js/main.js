@@ -60,7 +60,7 @@ $(document).ready(function(){
                     this.showEmojiPicker = false
             },
 
-            deleteMessage(msgId){
+            deleteMessage(event, msgId){
                 this.ws.send(JSON.stringify({
                     'action': 'deleteMessage',
                     'message': JSON.stringify({

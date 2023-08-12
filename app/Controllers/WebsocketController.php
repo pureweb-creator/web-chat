@@ -4,16 +4,19 @@ namespace App\Controllers;
 
 use App\Core\Helper;
 use App\Models\MessageModel;
+use App\Models\UserModel;
 use Monolog\Logger;
 use Workerman\Worker;
 
 class WebsocketController extends \App\Core\Controller
 {
     protected MessageModel $messageModel;
+    protected UserModel $userModel;
     public function __construct(Logger $logger)
     {
         parent::__construct();
         $this->messageModel = new MessageModel($logger);
+        $this->userModel = new UserModel($logger);
     }
 
     public function listen(): void
