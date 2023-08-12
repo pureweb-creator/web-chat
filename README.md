@@ -5,7 +5,7 @@
 # Description
 This web application provides online web messenger widget made as a websocket experiment.
 
-Used backend stack is 🐘[PHP](https://www.php.net/) with Workerman for websoket server.\
+Used backend stack is native 🐘[PHP](https://www.php.net/) with Workerman for websokets.\
 The frontend was built with ⚡️ [Vue](https://vuejs.org/).
 
 _Other libraries, tools and packages can be found in source code._
