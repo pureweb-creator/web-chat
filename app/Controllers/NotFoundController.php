@@ -16,12 +16,6 @@ class NotFoundController extends \App\Core\Controller
 
     public function index()
     {
-        $this->data = [
-            'title' => '404',
-            'subtitle' => 'Sorry, we were unable to find that page',
-            'link_text' => 'Return to home page'
-        ];
-
-        echo $this->view->render('404.twig', $this->data);
+        echo $this->view->render('404.twig');
     }
 }

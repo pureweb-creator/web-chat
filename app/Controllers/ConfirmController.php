@@ -23,13 +23,12 @@ class ConfirmController extends Controller
     }
     public function index(): void
     {
-        Middleware::Authentication('guest');
+        Middleware::Authentication();
 
         if (isset($_GET['email']))
             $this->sendConfirmation($_GET['email']);
 
         $this->data = [
-            'title' => 'Confirmation',
             'email' => $_GET['email'] ?? false
         ];
 
@@ -40,7 +39,7 @@ class ConfirmController extends Controller
 
         if (!$_POST) die;
 
-        Middleware::Authentication('guest');
+        Middleware::Authentication();
         Middleware::Csrf();
 
         $email = htmlspecialchars(trim($_POST['email']));

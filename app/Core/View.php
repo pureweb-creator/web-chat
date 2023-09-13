@@ -19,7 +19,7 @@ class View
         $this->logger = $logger;
     }
 
-    public function render($page, $data)
+    public function render($page, $data=[])
     {
         $this->loader = new FilesystemLoader('static/view');
         $this->twig = new Environment($this->loader,['debug'=>true]);

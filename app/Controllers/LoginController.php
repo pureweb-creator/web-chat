@@ -24,20 +24,16 @@ class LoginController extends Controller
 
     public function index(): void
     {
-        Middleware::Authentication('guest');
+        Middleware::Authentication();
 
-        $this->data = [
-            'title' => 'Login'
-        ];
-
-        echo $this->view->render('login.twig', $this->data);
+        echo $this->view->render('login.twig');
     }
 
     public function process(): void
     {
         if (!$_POST) die;
 
-        Middleware::Authentication('guest');
+        Middleware::Authentication();
         Middleware::Csrf();
 
         $email = htmlspecialchars(trim($_POST['email']));

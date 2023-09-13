@@ -39,7 +39,6 @@ class HomeController extends Controller{
         $users = $this->userModel->loadUsers();
 
         $this->data = [
-            'title'=>'Chat',
             'users'=>$users,
             'logged_user'=>$_SESSION['logged_user'],
             'message_to'=>$recipient ?? false

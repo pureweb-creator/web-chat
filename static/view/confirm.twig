@@ -1,10 +1,10 @@
 {% extends "base.twig" %}
 
-{% block title %}{{ title }}{% endblock %}
+{% block title %}Confirmation{% endblock %}
 {% block content %}
 <main class="app app_auth" id="confirmApp">
     <div class="container">
-        <h1 class="title">{{ title }}</h1>
+        <h1 class="title">Confirmation</h1>
         <form class="form form_type_auth" @submit.prevent="doConfirm">
             <input type="hidden" name="_token" value="{{ session._token }}" ref="_token">
             <input type="hidden" name="email" value="{{ email }}" ref="email">

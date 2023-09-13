@@ -1,12 +1,12 @@
 {% extends "base.twig" %}
 {# This extends Base #}
 
-{% block title %}{{ title }}{% endblock %}
+{% block title %}Login{% endblock %}
 
 {% block content %}
     <main class="app app_auth" id="loginApp">
         <div class="container">
-            <h1 class="title">{{ title }}</h1>
+            <h1 class="title">Login</h1>
             <form class="form form_type_auth" @submit.prevent="doLogin">
                 <input type="hidden" name="_token" value="{{ session._token }}" ref="_token">
                 <label for="tel" class="form__label">

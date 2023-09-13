@@ -23,19 +23,14 @@ class RegisterController extends Controller
 
     public function index(): void
     {
-        Middleware::Authentication('guest');
-
-        $this->data = [
-            'title' => 'Register'
-        ];
-
-        echo $this->view->render('register.twig', $this->data);
+        Middleware::Authentication();
+        echo $this->view->render('register.twig');
     }
 
     public function process(){
         if (!$_POST) die;
 
-        Middleware::Authentication('guest');
+        Middleware::Authentication();
         Middleware::Csrf();
 
         $name = htmlspecialchars(trim($_POST['name']));
