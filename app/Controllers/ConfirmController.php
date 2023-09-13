@@ -13,12 +13,14 @@ use PHPMailer\PHPMailer\PHPMailer;
 class ConfirmController extends Controller
 {
     protected UserModel $userModel;
+    protected Logger $logger;
     protected View $view;
 
     public function __construct(View $view, Logger $logger)
     {
         parent::__construct();
         $this->view = $view;
+        $this->logger = $logger;
         $this->userModel = new UserModel($logger);
     }
     public function index(): void
