@@ -31,6 +31,7 @@ services:
     volumes:
       - ./:/var/www/web-chat.loc
       - /var/www/web-chat.loc/vendor
+      - ./.docker/php/php.ini:/usr/local/etc/php/php.ini
     depends_on:
       mysql-web-chat:
         condition: service_healthy
@@ -66,6 +67,7 @@ services:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    command: ['mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci','--default-time-zone=+03:00']
     volumes:
       - ./.docker/mysql/my.cnf:/etc/mysql/my.cnf
       - mysqldata:/var/lib/mysql
