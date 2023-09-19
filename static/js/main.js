@@ -19,6 +19,10 @@ $(document).ready(function(){
                     message_from: "",
                     message_to: ""
                 },
+                user: {
+                    isOnline: null,
+                    lastSeen: null
+                },
                 test: "",
                 ws: ""
             }
@@ -141,6 +145,50 @@ $(document).ready(function(){
                     let parsed_response = JSON.parse(response.data)
 
                     switch (parsed_response.action){
+                        case "onConnect":
+                        case "onDisconnect":
+                            parsed_response.data.forEach(element => {
+                                if (element.id != $('#messageTo').val())
+                                    return false
+                                
+                                let now = new Date()
+                                let lastSeen = new Date(element.last_seen)
+                                let lastSeenInMilliseconds = new Date(element.last_seen).getTime()
+                                let lastSeenInMinutes = Math.floor((now-lastSeen)/1000/60)
+                                let lastSeenInHours = Math.floor(lastSeenInMinutes/60)
+                                let lastSeenInDays = Math.floor(lastSeenInHours/24)
+                                
+                                let lastSeenHourMinute = (new Date(lastSeenInMilliseconds).toLocaleTimeString()).slice(0, 5)
+                                let lastSeenMonthDay = (new Date(lastSeenInMilliseconds).toLocaleDateString()).slice(0, 5)
+                                
+                                let lastSeenString
+                                
+                                if (lastSeenInDays==1)
+                                    lastSeenString = `last seen yesterday at ${lastSeenHourMinute}`
+                                
+                                if (lastSeenInDays > 1)
+                                    lastSeenString = `last seen ${lastSeenMonthDay} at ${lastSeenHourMinute}`
+
+                                if ([...Array(24).keys()].includes(lastSeenInHours))
+                                    lastSeenString = `last seen ${lastSeenInHours} hours ago`
+
+                                if (lastSeenInHours==1)
+                                    lastSeenString = `last seen ${lastSeenInHours} hour ago`
+                                
+                                if ([...Array(60).keys()].includes(lastSeenInMinutes))
+                                    lastSeenString = `last seen ${lastSeenInMinutes} minutes ago`
+
+                                if (lastSeenInMinutes == 1)
+                                    lastSeenString = `last seen ${lastSeenInMinutes} minute ago`
+ 
+                                if (lastSeenInMinutes<1)
+                                    lastSeenString = `last seen just now`
+
+                                this.user.isOnline = element.online
+                                this.user.lastSeen = this.user.isOnline ? "online" : lastSeenString
+                                    
+                            });
+                            break
                         case "addMessage":
                             this.messages.push(parsed_response.data[0])
 

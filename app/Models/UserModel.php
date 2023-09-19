@@ -9,7 +9,7 @@ class UserModel extends Model
     public function loadUsers(): array
     {
         try {
-            $stmt = $this->pdo->query("SELECT user_name, email, id FROM user");
+            $stmt = $this->pdo->query("SELECT * FROM user");
             $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
         } catch (\PDOException $e){
@@ -68,13 +68,10 @@ class UserModel extends Model
         return $result;
     }
 
-    public function updateOnlineStatus($uid, $online){
-        try {
-            $stmt = $this->pdo->prepare('UPDATE user SET user.online = ? AND user.last_seen = now() WHERE user.id = ?');
-            $result = $stmt->execute([$online, time(), $uid]);
-        } catch (\PDOException $e){
-            $this->logger->critical($e->getMessage());
-        }
+    public function updateOnlineStatus($uid, $status){
+  
+        $stmt = $this->pdo->prepare('UPDATE user SET user.online = ?, user.last_seen = CURRENT_TIMESTAMP WHERE user.id = ?');
+        $result = $stmt->execute([$status, $uid]);
 
         return $result;
     }

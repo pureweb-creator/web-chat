@@ -22,8 +22,8 @@ final class UpdateUsersTable extends AbstractMigration
             die();
         
         $this->table('user')
-            ->addColumn('online', 'boolean', ['default'=>0])
-            ->addColumn('last_seen', 'timestamp', ['default'=>null])
+            ->addColumn('online', 'boolean', ['default'=>false])
+            ->addColumn('last_seen', 'timestamp', ['default'=>'CURRENT_TIMESTAMP'])
             ->save();
     }
 }

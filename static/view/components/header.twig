@@ -7,7 +7,7 @@
     {% else %}
         <div>
             <p class="recipient-panel__username">{{ message_to.user_name }}</p>
-            <p class="recipient-panel__useremail">{{ message_to.email }}</p>
+            <p class="recipient-panel__user-status" :class="{'online': user.isOnline}">[[ user.lastSeen ]]</p>
         </div>
     {% endif %}
 

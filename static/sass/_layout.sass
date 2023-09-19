@@ -95,10 +95,11 @@
     @include userpic(42px)
     margin-right: 15px
 
-  &__useremail
-    font-size: $fontSizeMedium
-    color: rgba($textColor, .5)
-    font-weight: 300
+  &__user-status
+    font-size: 14px
+    color: $secondaryColor
+  &__user-status.online
+    color: $successTextColor
 
 .logout-icon
   path

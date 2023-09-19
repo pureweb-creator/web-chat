@@ -27,8 +27,19 @@ class WebsocketController extends \App\Core\Controller
 
         $wsWorker->onConnect = function ($conn) use (&$activeConnections) {
             $conn->onWebSocketConnect = function($conn) use (&$activeConnections){
+                
                 // collect connection by user id
                 $activeConnections[$_GET['user']] = $conn;
+
+                $this->userModel->updateOnlineStatus($_GET['user'], 1);
+                
+                $response = json_encode([
+                    'action'=>'onConnect',
+                    'data'=>$this->userModel->loadUsers()
+                ]);
+
+                foreach ($activeConnections as $key=>$value)
+                    $value->send($response);
             };
         };
 
@@ -90,7 +101,19 @@ class WebsocketController extends \App\Core\Controller
         };
 
         $wsWorker->onClose = function ($conn) use (&$activeConnections) {
+
             $user = array_search($conn, $activeConnections);
+
+            $this->userModel->updateOnlineStatus($user, 0);
+                
+            $response = json_encode([
+                'action'=>'onDisconnect',
+                'data'=>$this->userModel->loadUsers()
+            ]);
+
+            foreach ($activeConnections as $key=>$value)
+                $value->send($response);
+
             unset($activeConnections[$user]);
         };
 

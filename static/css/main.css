@@ -248,10 +248,12 @@ b {
      object-fit: cover;
   margin-right: 15px;
 }
-.recipient-panel__useremail {
-  font-size: 15px;
-  color: rgba(36, 36, 36, 0.5);
-  font-weight: 300;
+.recipient-panel__user-status {
+  font-size: 14px;
+  color: #707579;
+}
+.recipient-panel__user-status.online {
+  color: #0d6efd;
 }
 
 .logout-icon path {
