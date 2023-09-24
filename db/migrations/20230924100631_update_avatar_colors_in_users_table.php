@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 use Phinx\Migration\AbstractMigration;
 
-final class UpdateUsersTable extends AbstractMigration
+final class UpdateAvatarColorsInUsersTable extends AbstractMigration
 {
     /**
      * Change Method.
@@ -19,8 +19,9 @@ final class UpdateUsersTable extends AbstractMigration
     public function change(): void
     {
         $this->table('user')
-            ->addColumn('online', 'boolean', ['default'=>false])
-            ->addColumn('last_seen', 'timestamp', ['default'=>'CURRENT_TIMESTAMP'])
+            ->renameColumn('avatar_color', 'avatar_color1')
+            ->addColumn('avatar_color2', 'string')
             ->update();
+
     }
 }

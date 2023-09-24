@@ -21,7 +21,7 @@ class WebsocketController extends \App\Core\Controller
 
     public function listen(): void
     {
-        $wsWorker = new Worker('websocket://0.0.0.0:8282'); // 8282 for docker. 8000 for wamp
+        $wsWorker = new Worker('websocket://0.0.0.0:8282'); // 8282, 8000
         $wsWorker->count = 1;
         $activeConnections = [];
 
@@ -47,7 +47,7 @@ class WebsocketController extends \App\Core\Controller
             $data = json_decode($data);
 
             switch ($data->action) {
-                case "addMessage":
+                case 'addMessage':
                     $message = json_decode($data->message, true);
 
                     $message_text = htmlspecialchars(trim($message['message_text']));
@@ -55,6 +55,8 @@ class WebsocketController extends \App\Core\Controller
                     $message_text = preg_replace('/--(.*?)--/isx', '<em>$1</em>', $message_text);
                     $message_text = preg_replace('/```(.*?)```/isx', '<pre>$1</pre>', $message_text);
                     $message_text = preg_replace('/__(.*?)__/isx', '<s>$1</s>', $message_text);
+                    $pattern = '/((https?:\/\/)?(www\.)?[A-Za-z0-9.-]+\.[A-Za-z]{2,6})/';
+                    $message_text = preg_replace($pattern, '<a href="https://$0" target="_blank">$0</a>', $message_text);
                     $message_text = nl2br($message_text);
 
                     $message['message_text'] = $message_text;
@@ -74,7 +76,6 @@ class WebsocketController extends \App\Core\Controller
                         $activeConnections[$message['message_to']]->send($response);
 
                     break;
-
                 case 'deleteMessage':
                     $message = json_decode($data->message, true);
 
@@ -97,6 +98,25 @@ class WebsocketController extends \App\Core\Controller
                         if (array_key_exists($message['message_to'], $activeConnections) && $message['message_from'] !== $message['message_to'])
                             $activeConnections[$message['message_to']]->send($response);
                     }
+                    break;
+                case 'startTyping':
+                    if (array_key_exists($data->message_to, $activeConnections)) {
+                        $activeConnections[$data->message_to]->send(
+                            json_encode([
+                                'action' => 'onStartTyping',
+                            ])
+                        );
+                    }
+                    break;
+                case 'endTyping':
+                    if (array_key_exists($data->message_to, $activeConnections)) {
+                        $activeConnections[$data->message_to]->send(
+                            json_encode([
+                                'action' => 'onEndTyping',
+                            ])
+                        );
+                    }
+                    break;
             }
         };
 

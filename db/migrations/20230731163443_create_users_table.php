@@ -18,15 +18,12 @@ final class CreateUsersTable extends AbstractMigration
      */
     public function change(): void
     {
-        if ($this->hasTable('user'))
-            $this->table('user')->drop()->save();
-
         $this->table('user')
             ->addColumn('user_name', 'string', ['limit'=>30])
             ->addColumn('email', 'string', ['limit'=>319])
             ->addColumn('register_date', 'timestamp', ['default'=>'CURRENT_TIMESTAMP'])
             ->addColumn('confirmed', 'boolean', ['default'=>0])
             ->addColumn('confirmation_code', 'string', ['limit'=>5, 'default'=>''])
-            ->save();
+            ->create();
     }
 }

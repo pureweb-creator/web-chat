@@ -1,6 +1,6 @@
 ﻿# Web Chat
 
-![Screenshot](https://i.ibb.co/ChMYzd6/image-2023-08-12-15-19-52.png)
+![Screenshot](https://i.ibb.co/tDBh8gT/image-2023-09-24-17-26-15.png)
 
 # Description
 This web application provides online web messenger widget made as a websocket experiment.

@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 use Phinx\Migration\AbstractMigration;
 
-final class UpdateUsersTable extends AbstractMigration
+final class UpdateMessagesTable extends AbstractMigration
 {
     /**
      * Change Method.
@@ -18,9 +18,9 @@ final class UpdateUsersTable extends AbstractMigration
      */
     public function change(): void
     {
-        $this->table('user')
-            ->addColumn('online', 'boolean', ['default'=>false])
-            ->addColumn('last_seen', 'timestamp', ['default'=>'CURRENT_TIMESTAMP'])
+        $this->table('message')
+            ->addColumn('seen', 'boolean', ['default' => false])
             ->update();
     }
 }
+

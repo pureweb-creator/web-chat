@@ -36,6 +36,15 @@ class RegisterController extends Controller
         $name = htmlspecialchars(trim($_POST['name']));
         $email = htmlspecialchars(trim($_POST['email']));
 
+        $hexColors1 = ['#B132FF', '#4E95FF', '#2FFFF3', '#FF3489', '#FF8F51', '#3DFF50'];
+        $hexColors2 = [];
+
+        foreach ($hexColors1 as $color)
+            $hexColors2[] = Helper::darken_color($color, 2);
+
+        $randColor1 = array_rand($hexColors1, 1);
+        $randColor2 = array_rand($hexColors2, 1);
+
         if (empty($name))
             Helper::response('No name', false);
 
@@ -48,7 +57,7 @@ class RegisterController extends Controller
         if ($this->userModel->loadUser('email', $email))
             Helper::response('User with that email already exists.', false);
 
-        if (!$this->userModel->addUser($email, $name))
+        if (!$this->userModel->addUser($email, $name, $hexColors1[$randColor1], $hexColors2[$randColor2]))
             Helper::response('Unexpected error.', false);
 
         Helper::response();

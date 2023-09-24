@@ -7,17 +7,33 @@
             </svg>
         </div>
 
-        <p class="form__input form__message-input" placeholder="Type a message..." ref="textInput" contenteditable @input="onInput"></p>
+        <p
+                class="form__input form__message-input"
+                placeholder="Type a message..."
+                ref="textInput"
+                contenteditable
+                @input="trackTypingEvent($event); inputText($event);"
+        ></p>
+
         <input type="hidden" name="message_from" id="messageFrom" value="{{ session.logged_user.id }}">
         <input type="hidden" name="message_to" id="messageTo" value="{{ message_to.id }}">
 
         <button v-show="messageNotEmpty" class="form__send-btn" type="submit">
             <img class="form__send-icon" src="static/img/icons8-sent-96.png" alt="send message button">
         </button>
+
+        <button :class="[
+                'btn-scroll-down', {
+                'active': isVisibleScrollDownArrow
+            }]"
+            @click="scrollDownTrigger = !scrollDownTrigger"
+        >
+            <img src="{{ home_url }}/static/img/icons8-down-96.png" alt="">
+        </button>
     </form>
     <emoji-picker
             class="light"
             v-if="showEmojiPicker"
-            @emoji-click="getEmoji"
+            @emoji-click="getEmoji($event); trackTypingEvent($event);"
     ></emoji-picker>
 </footer>

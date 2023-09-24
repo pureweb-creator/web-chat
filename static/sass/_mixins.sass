@@ -11,8 +11,14 @@
 @mixin userpic($width)
   width: $width
   height: $width
+  font-size: $width/3
   border-radius: 50%
   object-fit: cover
+  display: flex
+  align-items: center
+  justify-content: center
+  color: #fff
+  font-weight: 500
 
 @mixin alert($text_color, $bg_color, $border_color)
   color: $text_color

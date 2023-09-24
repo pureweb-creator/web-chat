@@ -6,7 +6,7 @@ body, html {
   padding: 0;
   margin: 0;
   font-family: "Roboto", sans-serif;
-  font-size: 15px;
+  font-size: 16px;
   color: #242424;
   background: #ffe8e8;
   scroll-behavior: smooth;
@@ -17,12 +17,21 @@ a, a:hover, a:active, a:focus {
   color: inherit;
 }
 
+a {
+  -webkit-user-select: text;
+  -moz-select: text;
+  -ms-select: text;
+  user-select: text;
+}
+
 ul, li {
   list-style: none;
 }
 
 input, button {
   font-family: inherit;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
   border-radius: 10px;
 }
 
@@ -102,17 +111,17 @@ b {
   font-family: inherit;
 }
 .form__input:hover {
-  border-color: #419FD9;
+  border-color: #3390ec;
 }
 .form__input:focus {
-  border-color: #419FD9;
+  border-color: #3390ec;
 }
 .form__btn {
   border: unset;
   font-weight: 500;
   display: block;
   width: 100%;
-  background: #419FD9;
+  background: #3390ec;
   color: #e6e6e6;
   padding: 15px;
   letter-spacing: 0.01em;
@@ -123,7 +132,7 @@ b {
   text-transform: uppercase;
 }
 .form__btn:hover {
-  background: #2786c1;
+  background: #1477d8;
 }
 
 .app_home {
@@ -147,7 +156,7 @@ b {
 }
 
 .users {
-  width: 350px;
+  width: 400px;
   flex-shrink: 0;
   background: #fff;
   overflow-y: hidden;
@@ -170,13 +179,14 @@ b {
   overflow-y: auto;
 }
 .users__link {
+  cursor: pointer;
   display: flex;
   align-items: center;
   padding: 10px;
   border-radius: 10px;
 }
 .users__link.active {
-  background: #419FD9;
+  background: #3390ec;
   color: #fff;
 }
 .users__link.active .users__email {
@@ -184,13 +194,6 @@ b {
 }
 .users__link:not(.active):hover {
   background: rgba(205, 205, 208, 0.2);
-}
-.users .users__item_saved .users__userpic {
-  background: #419FD9;
-  padding: 12px;
-}
-.users .users__item_saved .users__userpic path {
-  fill: #fff;
 }
 .users__label {
   display: block;
@@ -202,6 +205,7 @@ b {
 .users__name {
   font-size: 16px;
   line-height: 1.375rem;
+  font-weight: 500;
 }
 .users__email {
   color: #707579;
@@ -210,12 +214,25 @@ b {
   font-size: 14px;
 }
 .users__userpic {
-  width: 42px;
-  height: 42px;
+  width: 54px;
+  height: 54px;
+  font-size: 18px;
   border-radius: 50%;
-  -o-object-fit: cover;
-     object-fit: cover;
+  object-fit: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 500;
   margin-right: 15px;
+}
+
+.saved .saved__userpic {
+  background: linear-gradient(180deg, #90c3f5 0%, #3390ec 100%);
+  padding: 12px;
+}
+.saved .saved__userpic path {
+  fill: #fff;
 }
 
 .main-window {
@@ -236,6 +253,9 @@ b {
   align-items: center;
   justify-content: space-between;
 }
+.recipient-panel__username {
+  font-weight: 500;
+}
 .recipient-panel__info {
   display: flex;
   align-items: center;
@@ -243,9 +263,14 @@ b {
 .recipient-panel__userpic {
   width: 42px;
   height: 42px;
+  font-size: 14px;
   border-radius: 50%;
-  -o-object-fit: cover;
-     object-fit: cover;
+  object-fit: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 500;
   margin-right: 15px;
 }
 .recipient-panel__user-status {
@@ -255,7 +280,78 @@ b {
 .recipient-panel__user-status.online {
   color: #0d6efd;
 }
+.recipient-panel__typing {
+  display: flex;
+}
+.recipient-panel__typing-animation {
+  display: flex;
+  align-items: center;
+  margin-right: 3px;
+}
+.recipient-panel__typing-animation span {
+  display: block;
+  margin: 0 1px;
+  width: 5px;
+  height: 5px;
+  border-radius: 10px;
+  background: rgba(13, 110, 253, 0.3);
+  animation-name: typing;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+  animation-duration: 0.5s;
+}
+.recipient-panel__typing-animation span:first-child {
+  animation-name: typing-1;
+}
+.recipient-panel__typing-animation span:nth-child(2) {
+  animation-name: typing-2;
+}
+.recipient-panel__typing-animation span:last-child {
+  animation-name: typing-3;
+}
 
+@keyframes typing-1 {
+  from {
+    transform: scale(1);
+  }
+  22.222222% {
+    transform: scale(1.2);
+    background: #0d6efd;
+  }
+  66.666666% {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+@keyframes typing-2 {
+  from {
+    transform: scale(1);
+  }
+  44.444444% {
+    transform: scale(1.2);
+    background: #0d6efd;
+  }
+  66.666666% {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+@keyframes typing-3 {
+  from {
+    transform: scale(1);
+  }
+  66.666666% {
+    transform: scale(1.2);
+    background: #0d6efd;
+  }
+  to {
+    transform: scale(1);
+  }
+}
 .logout-icon path {
   fill: rgba(0, 0, 0, 0.5);
 }
@@ -264,6 +360,7 @@ b {
 }
 
 .app-body {
+  position: relative;
   padding: 10px;
   height: 100%;
   overflow-y: auto;
@@ -283,7 +380,7 @@ b {
 
 .messages {
   width: 100%;
-  max-width: 700px;
+  max-width: 600px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -291,7 +388,7 @@ b {
 .message__item {
   display: flex;
   align-items: flex-end;
-  margin: 7px 0;
+  margin: 4px 0;
   position: relative;
 }
 .message__item.active .message-utils {
@@ -319,9 +416,14 @@ b {
 .message__userpic {
   width: 35px;
   height: 35px;
+  font-size: 11.6666666667px;
   border-radius: 50%;
-  -o-object-fit: cover;
-     object-fit: cover;
+  object-fit: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 500;
   margin-right: 5px;
   position: sticky;
   bottom: 0;
@@ -330,20 +432,38 @@ b {
 .message__text {
   display: flex;
   align-items: flex-end;
-  max-width: 600px;
-  min-width: 100px;
-  font-size: 15px;
+  max-width: 480px;
+  min-width: 75px;
+  font-size: 16px;
   background: #fff;
   border-radius: 18px 18px 18px 4px;
-  padding: 8px 13px 7px 13px;
+  padding: 5px 13px 2px 11px;
   box-shadow: 0 1px 2px rgba(16, 35, 47, 0.1490196078);
-  width: -moz-fit-content;
   width: fit-content;
   position: relative;
+  cursor: auto;
 }
 .message__text div {
   width: 100%;
   word-break: break-word;
+}
+.message__text.message__text_short {
+  background: transparent;
+  box-shadow: unset;
+  padding: 0;
+  text-align: right;
+}
+.message__text.message__text_short > div {
+  font-size: 44px;
+}
+.message__text.message__text_short .message_pub_date {
+  display: block;
+  margin-top: 0;
+  right: 100px;
+  float: unset;
+  margin-left: 0;
+  bottom: -20px;
+  left: -15px;
 }
 
 .message-utils {
@@ -395,6 +515,11 @@ b {
   margin-left: 7px;
 }
 
+.message__text a {
+  text-decoration: underline;
+  color: #3390ec;
+}
+
 .message__text_big span {
   margin-top: 0;
 }
@@ -402,7 +527,7 @@ b {
 .footer {
   padding-top: 5px;
   width: 100%;
-  max-width: 700px;
+  max-width: 650px;
   margin-left: auto;
   margin-right: auto;
   margin-bottom: 25px;
@@ -419,7 +544,7 @@ b {
   margin-bottom: 0;
   padding: 15px 15px 15px 50px;
   box-shadow: 0 1px 5px -1px rgba(0, 0, 0, 0.2117647059);
-  font-size: 15px;
+  font-size: 16px;
   background: #fff;
   vertical-align: top;
   max-width: 100%;
@@ -473,7 +598,30 @@ emoji-picker {
   cursor: pointer;
   display: block;
   flex-shrink: 0;
-  background: #419FD9;
+  background: #3390ec;
+}
+
+.btn-scroll-down {
+  width: 50px;
+  height: 50px;
+  padding: 15px;
+  box-shadow: 0 1px 5px -1px rgba(0, 0, 0, 0.2117647059);
+  border-radius: 100px;
+  position: absolute;
+  right: -60px;
+  top: -60px;
+  background: #fff;
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+.btn-scroll-down:hover {
+  background: #ebebeb;
+}
+.btn-scroll-down.active {
+  visibility: visible;
+  opacity: 1;
 }
 
 .form__send-icon {
@@ -500,7 +648,7 @@ emoji-picker {
 }
 .form_type_auth .form__reg-link {
   text-decoration: underline;
-  color: #419FD9;
+  color: #3390ec;
 }
 .form_type_auth .form-help {
   color: rgb(223, 63, 64);
@@ -544,7 +692,7 @@ emoji-picker {
 }
 
 .form__input_confirm_code.active {
-  border-color: #419FD9;
+  border-color: #3390ec;
 }
 
 .app-404 {
@@ -564,3 +712,5 @@ emoji-picker {
   margin-top: 32px;
   line-height: 150%;
 }
+
+/*# sourceMappingURL=main.css.map */

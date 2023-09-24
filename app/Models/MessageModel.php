@@ -10,14 +10,12 @@ class MessageModel extends Model
     {
         try {
             $stmt = $this->pdo->prepare("
-                SELECT user.id as user_id, user.user_name as user_name, message.id as message_id, message.message_text, message.message_from as message_from, message.message_to as message_to, message.message_pub_date as message_pub_date
+                SELECT message.*
                 FROM message
-                    RIGHT JOIN user
-                        ON user.id = :message_to
-                        WHERE (message.message_from = :message_from AND message.message_to = :message_to) OR
-                               (message.message_from = :message_to AND message.message_to = :message_from)
-                        ORDER BY message.message_pub_date
-                        DESC LIMIT :offset, :limit
+                WHERE (message.message_from = :message_from AND message.message_to = :message_to) OR
+                       (message.message_from = :message_to AND message.message_to = :message_from)
+                ORDER BY message.message_pub_date
+                DESC LIMIT :offset, :limit
             ");
 
             $stmt->bindValue(':message_to', $message_to);

@@ -1,24 +1,28 @@
-<section class="app-body" ref="chatBody" @scroll="loadMessages" @click.self="activeItem=null, showEmojiPicker = false">
+<section class="app-body"
+        ref="chatBody"
+        @scroll="loadMessages(); scrollDownHandler();"
+        @click.self="activeItem=null, showEmojiPicker = false">
     <ul class="messages">
-        <li
-            @click.prevent="activeItem = activeItem == index ? null : index"
+        <li @contextmenu="$event.preventDefault(); activeItem = activeItem == index ? null : index"
             v-for="(message, index) in messages"
             :key="index"
             :id="index"
             :message_id="message.message_id"
-            class="message__item message"
-            :class="{
-                'message__item_self': message.message_from == '{{ session.logged_user.id }}',
-                'active': index === activeItem
-            }">
-            <img class="message__userpic" src="{{ home_url }}/static/img/user_3177440.png" alt="user picture">
-            <a
-                :href="'#'+index"
-                class="message__text"
-                :class="{
+            :class="[
+                'message__item',
+                'message',
+                {
+                    'message__item_self': message.message_from == '{{ session.logged_user.id }}',
+                    'active': index == activeItem
+            }]">
+
+            <a :href="'#'+index"
+               draggable="false"
+                :class="['message__text', {
+                    'message__text_short':  message.message_text.length <= 6,
                     'message__text_big': message.message_text.length >= 74,
-                }">
-                <div v-html='message.message_text+"<span>"+getTimeFromDateTime(message.message_pub_date)+"</span>"'>
+                }]">
+                <div v-html='message.message_text+"<span class=\"message_pub_date\">"+getTimeFromDateTime(message.message_pub_date)+"</span>"'>
 
                 </div>
                 {% include 'components/utils.twig' %}

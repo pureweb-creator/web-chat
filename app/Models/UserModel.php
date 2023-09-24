@@ -44,11 +44,11 @@ class UserModel extends Model
         return $result;
     }
 
-    public function addUser($email, $code): bool|\PDOStatement
+    public function addUser($email, $code, $hexColor1, $hexColor2): bool|\PDOStatement
     {
         try {
-            $stmt = $this->pdo->prepare('INSERT INTO user (user_name, email) VALUES (?,?)');
-            $result = $stmt->execute([$code, $email]);
+            $stmt = $this->pdo->prepare('INSERT INTO user (user_name, email, avatar_color1, avatar_color2) VALUES (?,?,?,?)');
+            $result = $stmt->execute([$code, $email, $hexColor1, $hexColor2]);
         } catch (\PDOException $e){
             $this->logger->critical($e->getMessage(), ['file'=>$e->getFile(),'line'=>$e->getLine()]);
         }

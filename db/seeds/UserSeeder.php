@@ -17,10 +17,15 @@ class UserSeeder extends AbstractSeed
         $faker = Faker\Factory::create();
 
         for ($i=0; $i<10; $i++){
+            $color1 = $faker->randomElement(['#B132FF', '#4E95FF', '#2FFFF3', '#FF3489', '#FF8F51', '#3DFF50']);
+            $color2 = \App\Core\Helper::darken_color($color1, 2);
+
             $data[] = [
                 'user_name'=>$faker->name(),
                 'email'=>$faker->email(),
-                'confirmed'=>true
+                'confirmed'=>true,
+                'avatar_color1'=>$color1,
+                'avatar_color2'=>$color2
             ];
         }
 

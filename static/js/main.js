@@ -12,6 +12,9 @@ $(document).ready(function(){
                 scrollDownTrigger: false,
                 activeItem: null,
                 _token: "",
+                startTyping: null,
+                typing: null,
+                isVisibleScrollDownArrow: false,
                 messages: [],
                 message: {
                     message_text: "",
@@ -21,9 +24,9 @@ $(document).ready(function(){
                 },
                 user: {
                     isOnline: null,
+                    isTyping: null,
                     lastSeen: null
                 },
-                test: "",
                 ws: ""
             }
         },
@@ -39,13 +42,40 @@ $(document).ready(function(){
             this.wsListen()
         },
         methods: {
-            onInput(e) {
+            inputText(e) {
                 this.message.message_text = e.target.innerText
 
                 // if new line, scroll entire dialog body
                 this.scrollDownTrigger = !this.scrollDownTrigger
             },
+            trackTypingEvent(e){
 
+                if (this.startTyping==null)
+                    this.startTyping=true
+
+                if (this.startTyping){
+                    this.ws.send(JSON.stringify({
+                        'action': 'startTyping',
+                        'message_to': $('#messageTo').val()
+                    }))
+
+                    this.startTyping=false
+                }
+
+                if(this.isTyping) {
+                    clearTimeout(this.isTyping);
+                    this.isTyping = null
+                }
+
+                this.isTyping = setTimeout(() =>  {
+                    this.ws.send(JSON.stringify({
+                        'action': 'endTyping',
+                        'message_to': $('#messageTo').val()
+                    }))
+                    this.startTyping=null
+                }, 1500)
+
+            },
             addMessage: function (){
                 if (this.message.message_text.trim().length === 0)
                     return
@@ -59,12 +89,16 @@ $(document).ready(function(){
                     'message': JSON.stringify(this.message)
                 }))
 
+                this.ws.send(JSON.stringify({
+                    'action': 'endTyping',
+                    'message_to': $('#messageTo').val()
+                }))
+
                 // hide emoji picker if was selected
                 if (this.showEmojiPicker)
                     this.showEmojiPicker = false
             },
-
-            deleteMessage(event, msgId){
+            deleteMessage(msgId){
                 this.ws.send(JSON.stringify({
                     'action': 'deleteMessage',
                     'message': JSON.stringify({
@@ -73,14 +107,16 @@ $(document).ready(function(){
                         'message_to': $('#messageTo').val() ?? ''
                     })
                 }))
-            },
 
+                this.activeItem=null
+            },
             // Load new pack of messages on scroll up
             loadMessages: function (){
+
                 // check if we are scrolling up
                 if (this.$refs.chatBody.scrollTop === 0) {
 
-                    // check if we scrolled to the beginning of the message history
+                    // check if we scrolled to the beginning of the messages history
                     if (this.messages[0].message_id !== this.firstMessageID) {
 
                         let formData = new FormData()
@@ -113,32 +149,33 @@ $(document).ready(function(){
                         this.loading_offset+=100
                 }
             },
-
             getTimeFromDateTime: function (date){
                 date = date.split(' ')[1]
                 return date.substr(date,date.length-3)
             },
-
             getEmoji: function(e){
                 this.$refs.textInput.innerText += e.detail.unicode
                 this.message.message_text += e.detail.unicode
             },
-
             copyToCliptray(msgText){
-                
-                let strippedText = msgText.replace(/(<([^>]+)>)/gi, "")
+                // Decode html entities
+                var textArea = document.createElement('textarea');
+                textArea.innerHTML = msgText;
+
+                let strippedText = textArea.value.replace(/(<([^>]+)>)/gi, "")
                 var TempText = document.createElement("input");
                 TempText.value = strippedText;
                 document.body.appendChild(TempText);
                 TempText.select();
-                
+
                 document.execCommand("copy");
                 document.body.removeChild(TempText);
-                
+
+                this.activeItem = null
+
                 // works only over https
                 // navigator.clipboard.writeText(strippedText)
             },
-
             // listen for a websocket response
             wsListen: function (){
                 this.ws.onmessage = response => {
@@ -148,50 +185,56 @@ $(document).ready(function(){
                         case "onConnect":
                         case "onDisconnect":
                             parsed_response.data.forEach(element => {
-                                if (element.id != $('#messageTo').val())
+
+                                if (parseInt(element.id) !== parseInt($('#messageTo').val()))
                                     return false
-                                
+
                                 let now = new Date()
                                 let lastSeen = new Date(element.last_seen)
                                 let lastSeenInMilliseconds = new Date(element.last_seen).getTime()
                                 let lastSeenInMinutes = Math.floor((now-lastSeen)/1000/60)
                                 let lastSeenInHours = Math.floor(lastSeenInMinutes/60)
                                 let lastSeenInDays = Math.floor(lastSeenInHours/24)
-                                
+
                                 let lastSeenHourMinute = (new Date(lastSeenInMilliseconds).toLocaleTimeString()).slice(0, 5)
                                 let lastSeenMonthDay = (new Date(lastSeenInMilliseconds).toLocaleDateString()).slice(0, 5)
-                                
+
                                 let lastSeenString
-                                
-                                if (lastSeenInDays==1)
+
+                                if (lastSeenInDays===1)
                                     lastSeenString = `last seen yesterday at ${lastSeenHourMinute}`
-                                
+
                                 if (lastSeenInDays > 1)
                                     lastSeenString = `last seen ${lastSeenMonthDay} at ${lastSeenHourMinute}`
 
                                 if ([...Array(24).keys()].includes(lastSeenInHours))
                                     lastSeenString = `last seen ${lastSeenInHours} hours ago`
 
-                                if (lastSeenInHours==1)
+                                if (lastSeenInHours===1)
                                     lastSeenString = `last seen ${lastSeenInHours} hour ago`
-                                
+
                                 if ([...Array(60).keys()].includes(lastSeenInMinutes))
                                     lastSeenString = `last seen ${lastSeenInMinutes} minutes ago`
 
-                                if (lastSeenInMinutes == 1)
+                                if (lastSeenInMinutes === 1)
                                     lastSeenString = `last seen ${lastSeenInMinutes} minute ago`
- 
+
                                 if (lastSeenInMinutes<1)
                                     lastSeenString = `last seen just now`
 
                                 this.user.isOnline = element.online
                                 this.user.lastSeen = this.user.isOnline ? "online" : lastSeenString
-                                    
+
                             });
+                            break
+                        case "onStartTyping":
+                            this.user.isTyping=true
+                            break
+                        case "onEndTyping":
+                            this.user.isTyping=false
                             break
                         case "addMessage":
                             this.messages.push(parsed_response.data[0])
-
                             this.loading_offset = 100
                             this.scrollDownTrigger = !this.scrollDownTrigger
 
@@ -200,7 +243,6 @@ $(document).ready(function(){
                             this.$refs.textInput.innerText = ""
 
                             break
-
                         case "deleteMessage":
                             // replace existing messages array with given (with deleted items)
                             if (parsed_response.success===true)
@@ -209,7 +251,6 @@ $(document).ready(function(){
                     }
                 }
             },
-
             loadFirstPack: function (){
                 // Get first pack of messages
                 formData = new FormData()
@@ -233,6 +274,13 @@ $(document).ready(function(){
                         this.scrollDownTrigger = !this.scrollDownTrigger
                         this.loading_offset+=100
                     })
+            },
+            scrollDownHandler: function(){
+                let scrollHeigth = this.$refs.chatBody.scrollHeight
+                let scrollTop = this.$refs.chatBody.scrollTop
+                let clientHeigth = this.$refs.chatBody.clientHeight
+
+                this.isVisibleScrollDownArrow = (scrollHeigth - (scrollTop + clientHeigth)) >= 300
             }
         },
         watch: {
@@ -246,6 +294,11 @@ $(document).ready(function(){
         computed: {
             messageNotEmpty: function(){
                 return this.message.message_text.trim().length > 0
+            }
+        },
+        filters: {
+            truncate: function (value){
+                return value.slice(0, 1)
             }
         }
     });
