@@ -42,14 +42,35 @@ $(document).ready(function(){
             this.wsListen()
         },
         methods: {
-            test() {
-                console.log("HI")
-            },
             inputText(e) {
                 this.message.message_text = e.target.innerText
 
                 // if new line, scroll entire dialog body
                 this.scrollDownTrigger = !this.scrollDownTrigger
+            },
+            pasteText(e) {                
+                // Get the copied text from the clipboard
+                const text = e.clipboardData
+                    ? (e.originalEvent || e).clipboardData.getData('text/plain')
+                    : // For IE
+                    window.clipboardData
+                    ? window.clipboardData.getData('Text')
+                    : '';
+
+                this.message.message_text += text
+        
+                // Insert text at the current position of caret
+                const range = document.getSelection().getRangeAt(0);
+                range.deleteContents();
+    
+                const textNode = document.createTextNode(text);
+                range.insertNode(textNode);
+                range.selectNodeContents(textNode);
+                range.collapse(false);
+    
+                const selection = window.getSelection();
+                selection.removeAllRanges();
+                selection.addRange(range);
             },
             trackTypingEvent(e){
 
@@ -78,6 +99,9 @@ $(document).ready(function(){
                     this.startTyping=null
                 }, 1500)
 
+            },
+            openContextMenu: function(index){
+                this.activeItem = this.activeItem == index ? null : index;
             },
             addMessage: function (){
                 if (this.message.message_text.trim().length === 0)

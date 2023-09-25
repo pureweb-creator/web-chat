@@ -21,12 +21,13 @@
   background: $panelColor
   overflow-y: hidden
   border-right: 1px solid $panelBorderColor
-  padding: 10px
+  padding: 10px 15px 10px 7px
   color: #000
   @include scrollbar()
 
   &:hover
     overflow-y: auto
+    padding-right: 9px
 
   &__link
     cursor: pointer
@@ -72,24 +73,26 @@
   path
     fill: #fff
 
-
-
 .main-window
   display: flex
   flex-direction: column
-  background: $appBgColor
+  // background: $appBgColor
+  background: url('../img/Flower-Pattern-for-Background-Graphics-21862428-2-580x387.png'), $appBgColor
+  background-size: auto 
   width: 100%
   overflow: hidden
   position: relative
 
 .recipient-panel
   background: $panelColor
-  font-size: $fontSizeBig
-  padding: 10px 15px
+  font-size: $fontSizeMedium
+  padding: 6px 15px
   box-shadow: $shadow
   display: flex
   align-items: center
   justify-content: space-between
+  position: relative
+  z-index: 2
 
   &__username
     font-weight: 500
@@ -175,12 +178,15 @@
   padding: 10px
   height: 100%
   overflow-y: auto
+  overflow-x: hidden
   @include scrollbar()
   scroll-behavior: smooth
 
 .messages
   width: 100%
-  max-width: 600px
+  max-width: 710px
+  padding-right: 70px
+  padding-left: 20px
   margin-left: auto
   margin-right: auto
 
@@ -189,12 +195,15 @@
   align-items: flex-end
   margin: 4px 0
   position: relative
+  
   &.active .message-utils
     opacity: 1
     visibility: visible
-    transform: scale(1)
+    transform: scale(1) translateX(10px)
   &_self
     justify-content: flex-end
+    .message__text_short
+      text-align: right
     .message__userpic
       order: 1
       margin-left: 5px
@@ -202,6 +211,10 @@
       transition: all .1s ease
       background: $msgOutBg
       border-radius: $radiusBig $radiusBig $radiusSmall $radiusBig
+  &:not(&_self)
+    .message__time-inner
+      margin-right: auto
+      margin-left: unset !important
 
   &__icon
     margin-right: 5px
@@ -240,7 +253,7 @@
     position: absolute
     right: 0
     bottom: 4px
-    padding-right: 6px
+    padding-right: 9px
 
   div
     display: inline
@@ -254,7 +267,6 @@
     background: transparent
     box-shadow: unset
     padding: 0
-    text-align: right
     .message__time-label
       display: none
     .message__time-inner
@@ -272,28 +284,29 @@
 
   .message-utils
     max-width: 200px
-    width: 200px
+    width: 140px
     background: #fff
-    border-radius: $radius
+    border-radius: $radius $radius $radius
     box-shadow: $shadow
-    right: 20px
-    bottom: -85px
+    right: -140px
+    bottom: 0
     z-index: 2
     opacity: 0
     visibility: hidden
     transition: all .2s ease
-    transform: scale(.8)
+    transform: scale(0.95) translateY(-10px)
+    transfrom-origin: 100% 50%
     position: absolute
     &__item
       cursor: pointer
       display: flex
       align-items: center
-      padding: 10px 15px
+      padding: 7px 15px
+      font-weight: 500
       &:hover
         background: rgba($panelBorderColor, 0.2)
-      color: $secondaryColor
       path
-        fill: $secondaryColor
+        fill: $textColor
     &__icon
       margin-right: 10px
     &__delete
@@ -304,9 +317,9 @@
 
 // FOOTER
 .footer
-  padding-top: 5px
   width: 100%
-  max-width: 650px
+  padding: 5px 10px
+  max-width: 710px
   margin-left: auto
   margin-right: auto
   margin-bottom: 25px
@@ -318,21 +331,21 @@
 
 .form__message-input
   margin-bottom: 0
+  height: auto
   padding: 15px 15px 15px 50px
   box-shadow: $shadow
   font-size: $fontSizeMedium
   background: #fff
   vertical-align: top
-  max-width: 100%
-  min-width: 100%
-  min-height: $textareaMinHeight
+  max-width: calc(100% - 60px)
+  min-height: 50px
   max-height: 300px
   overflow-y: auto
   resize: none
   scrollbar-width: none
   -ms-overflow-style: none
   border: none
-  border-radius: $radius
+  border-radius: $radiusBig
   &::-webkit-scrollbar
     display: none
   &:hover,&:focus
@@ -340,17 +353,46 @@
 
   &[placeholder]:empty::before
     content: attr(placeholder)
-    color: $textColor
+    color: rgba($textColor, .5)
+    line-height: 1.2
     cursor: text
   [placeholder]:empty:focus::before
     content: ""
 
 emoji-picker
+  box-shadow: 0 5px 10px 5px #242424
+  background: rgb(243 245 237)
+  --background: rgb(243 245 237)
+  --num-columns: 7
+  --input-border-radius: 10px
+  --input-border-size: 1px
+  --input-border-color: rgba(0,0,0,.1)
+  --outline-size: 0
+  --input-padding: 5px 10px
+  --input-font-size: 14px 
+  --input-font-color: #242424
+  --emoji-size: 25px
+  --category-emoji-size: 20px
+  --emoji-padding: 9px
+  --indicator-color: #3390ec
+  --indicator-height: 2px
+  --button-hover-background: rgba(0,0,0,.05)
+
   position: absolute
-  bottom: 70px
-  left: 0
-  border-radius: $radius
+  bottom: 65px
+  left: 10px
+  border-radius: $radiusBig
+  box-shadow: $shadow
   overflow: hidden
+  transition: all .1s ease
+  transform-origin: left bottom
+  transform: translateX(-10px) scale(0.9)
+  opacity: 0
+  visibility: hidden
+  &.active
+    transform: translateX(0) scale(1)
+    opacity: 1
+    visibility: visible
 
 .send-message-utils
   display: flex
@@ -362,8 +404,10 @@ emoji-picker
 .form__send-btn
   width: 50px
   height: 50px
+  position: absolute
+  right: 0
   border-radius: 50%
-  padding: 12px
+  padding: 13px
   margin-left: 10px
   cursor: pointer
   display: block
@@ -377,7 +421,7 @@ emoji-picker
   box-shadow: $shadow
   border-radius: 100px
   position: absolute
-  right: -60px
+  right: 0
   top: -60px
   background: #fff
   cursor: pointer
@@ -398,9 +442,12 @@ emoji-picker
   path
     transition: all .2s ease
     fill: $secondaryColor
+  &.active
+    path
+      fill: $accentColor
   &:hover
     path
-      fill: #000
+      fill: $accentColor
 
 .form_type_auth
   margin-left: auto

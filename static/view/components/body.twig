@@ -3,7 +3,7 @@
         @scroll="loadMessages(); scrollDownHandler();"
         @click.self="activeItem=null, showEmojiPicker = false">
     <ul class="messages">
-        <li @contextmenu="$event.preventDefault(); activeItem = activeItem == index ? null : index"
+        <li @contextmenu.prevent="openContextMenu(index)"
             v-for="(message, index) in messages"
             :key="index"
             :id="index"

@@ -49,15 +49,48 @@ class WebsocketController extends \App\Core\Controller
             switch ($data->action) {
                 case 'addMessage':
                     $message = json_decode($data->message, true);
-
                     $message_text = htmlspecialchars(trim($message['message_text']));
+                    
+                    $pattern = "/
+                        (
+                            (
+                                (
+                                    ((ftp|http)s?:\/\/)? # protocols
+                                    (www\.)?
+                                    [A-Za-z0-9.-]+
+                                    \.
+                                    [A-Za-z]{2,6}
+                                ) |
+                                (
+                                    ((ftp|http)s?:\/\/)?
+                                    ((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)\.?\b){4} # ip address
+                                )
+                            )
+                            [a-zA-Z0-9\.\-_\~!$&\'\(\)\*\+,;=:@%\?\#\/]{0,} # least url parts
+                        )
+                        /x";
+
+                    $message_text = preg_replace_callback(
+                        $pattern,
+                        function($matches){
+                            if (str_starts_with($matches[0], 'http://') || 
+                                str_starts_with($matches[0], 'https://') ||
+                                str_starts_with($matches[0], 'ftp://') ||
+                                str_starts_with($matches[0], 'ftps://')
+                            )
+                                return "<a href='{$matches[0]}' target='_blank'>{$matches[0]}</a>";
+                            
+                            return "<a href='https://{$matches[0]}' target='_blank'>{$matches[0]}</a>";
+                                
+                        },
+                        $message_text);
+
+                    $message_text = nl2br($message_text);
+
                     $message_text = preg_replace('/\*\*(.*?)\*\*/isx', '<b>$1</b>', $message_text);
                     $message_text = preg_replace('/--(.*?)--/isx', '<em>$1</em>', $message_text);
                     $message_text = preg_replace('/```(.*?)```/isx', '<pre>$1</pre>', $message_text);
                     $message_text = preg_replace('/__(.*?)__/isx', '<s>$1</s>', $message_text);
-                    $pattern = '/((https?:\/\/)?(www\.)?[A-Za-z0-9.-]+\.[A-Za-z]{2,6})/';
-                    $message_text = preg_replace($pattern, '<a href="https://$0" target="_blank">$0</a>', $message_text);
-                    $message_text = nl2br($message_text);
 
                     $message['message_text'] = $message_text;
                     $this->messageModel->addMessage($message);

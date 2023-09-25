@@ -110,17 +110,17 @@ b {
   font-family: inherit;
 }
 .form__input:hover {
-  border-color: #3390ec;
+  border-color: #2aa02f;
 }
 .form__input:focus {
-  border-color: #3390ec;
+  border-color: #2aa02f;
 }
 .form__btn {
   border: unset;
   font-weight: 500;
   display: block;
   width: 100%;
-  background: #3390ec;
+  background: #2aa02f;
   color: #e6e6e6;
   padding: 15px;
   letter-spacing: 0.01em;
@@ -131,7 +131,7 @@ b {
   text-transform: uppercase;
 }
 .form__btn:hover {
-  background: #1477d8;
+  background: #1f7823;
 }
 
 .app_home {
@@ -160,22 +160,26 @@ b {
   background: #fff;
   overflow-y: hidden;
   border-right: 1px solid #cdcdd0;
-  padding: 10px;
+  padding: 10px 15px 10px 7px;
   color: #000;
 }
 .users::-webkit-scrollbar {
-  width: 4px;
-  background: rgba(0, 0, 0, 0.1);
+  width: 7px;
+  background: transparent;
+  position: absolute;
 }
 .users::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.5);
-  border-radius: 5px;
+  background: #cdcdd0;
+  position: absolute;
+  border-right: 1px solid #fff;
+  border-radius: 10px;
 }
 .users::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.5);
+  background: #cdcdd0;
 }
 .users:hover {
   overflow-y: auto;
+  padding-right: 9px;
 }
 .users__link {
   cursor: pointer;
@@ -185,7 +189,7 @@ b {
   border-radius: 10px;
 }
 .users__link.active {
-  background: #3390ec;
+  background: #2aa02f;
   color: #fff;
 }
 .users__link.active .users__email {
@@ -228,7 +232,7 @@ b {
 }
 
 .saved .saved__userpic {
-  background: linear-gradient(180deg, #90c3f5 0%, #3390ec 100%);
+  background: linear-gradient(180deg, #5cd461 0%, #2aa02f 100%);
   padding: 12px;
 }
 .saved .saved__userpic path {
@@ -238,7 +242,8 @@ b {
 .main-window {
   display: flex;
   flex-direction: column;
-  background: #8EC5FC linear-gradient(62deg, #8EC5FC 0%, #E0C3FC 100%);
+  background: url("../img/Flower-Pattern-for-Background-Graphics-21862428-2-580x387.png"), linear-gradient(62deg, #fce48e 0%, #e17c54 100%);
+  background-size: auto;
   width: 100%;
   overflow: hidden;
   position: relative;
@@ -246,12 +251,14 @@ b {
 
 .recipient-panel {
   background: #fff;
-  font-size: 18px;
-  padding: 10px 15px;
+  font-size: 16px;
+  padding: 6px 15px;
   box-shadow: 0 1px 5px -1px rgba(0, 0, 0, 0.2117647059);
   display: flex;
   align-items: center;
   justify-content: space-between;
+  position: relative;
+  z-index: 2;
 }
 .recipient-panel__username {
   font-weight: 500;
@@ -365,23 +372,29 @@ b {
   padding: 10px;
   height: 100%;
   overflow-y: auto;
+  overflow-x: hidden;
   scroll-behavior: smooth;
 }
 .app-body::-webkit-scrollbar {
-  width: 4px;
-  background: rgba(0, 0, 0, 0.1);
+  width: 7px;
+  background: transparent;
+  position: absolute;
 }
 .app-body::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.5);
-  border-radius: 5px;
+  background: #cdcdd0;
+  position: absolute;
+  border-right: 1px solid #fff;
+  border-radius: 10px;
 }
 .app-body::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.5);
+  background: #cdcdd0;
 }
 
 .messages {
   width: 100%;
-  max-width: 600px;
+  max-width: 710px;
+  padding-right: 70px;
+  padding-left: 20px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -395,10 +408,13 @@ b {
 .message__item.active .message-utils {
   opacity: 1;
   visibility: visible;
-  transform: scale(1);
+  transform: scale(1) translateX(10px);
 }
 .message__item_self {
   justify-content: flex-end;
+}
+.message__item_self .message__text_short {
+  text-align: right;
 }
 .message__item_self .message__userpic {
   order: 1;
@@ -408,6 +424,10 @@ b {
   transition: all 0.1s ease;
   background: #FFF3D5;
   border-radius: 18px 18px 4px 18px;
+}
+.message__item:not(.message__item_self) .message__time-inner {
+  margin-right: auto;
+  margin-left: unset !important;
 }
 .message__item__icon {
   margin-right: 5px;
@@ -456,7 +476,7 @@ b {
   position: absolute;
   right: 0;
   bottom: 4px;
-  padding-right: 6px;
+  padding-right: 9px;
 }
 .message__text div {
   display: inline;
@@ -464,13 +484,12 @@ b {
 }
 .message__text a {
   text-decoration: underline;
-  color: #3390ec;
+  color: #2aa02f;
 }
 .message__text.message__text_short {
   background: transparent;
   box-shadow: unset;
   padding: 0;
-  text-align: right;
 }
 .message__text.message__text_short .message__time-label {
   display: none;
@@ -491,31 +510,32 @@ b {
 }
 .message__text .message-utils {
   max-width: 200px;
-  width: 200px;
+  width: 140px;
   background: #fff;
-  border-radius: 10px;
+  border-radius: 10px 10px 10px;
   box-shadow: 0 1px 5px -1px rgba(0, 0, 0, 0.2117647059);
-  right: 20px;
-  bottom: -85px;
+  right: -140px;
+  bottom: 0;
   z-index: 2;
   opacity: 0;
   visibility: hidden;
   transition: all 0.2s ease;
-  transform: scale(0.8);
+  transform: scale(0.95) translateY(-10px);
+  transfrom-origin: 100% 50%;
   position: absolute;
 }
 .message__text .message-utils__item {
   cursor: pointer;
   display: flex;
   align-items: center;
-  padding: 10px 15px;
-  color: #707579;
+  padding: 7px 15px;
+  font-weight: 500;
 }
 .message__text .message-utils__item:hover {
   background: rgba(205, 205, 208, 0.2);
 }
 .message__text .message-utils__item path {
-  fill: #707579;
+  fill: #242424;
 }
 .message__text .message-utils__icon {
   margin-right: 10px;
@@ -528,9 +548,9 @@ b {
 }
 
 .footer {
-  padding-top: 5px;
   width: 100%;
-  max-width: 650px;
+  padding: 5px 10px;
+  max-width: 710px;
   margin-left: auto;
   margin-right: auto;
   margin-bottom: 25px;
@@ -545,21 +565,21 @@ b {
 
 .form__message-input {
   margin-bottom: 0;
+  height: auto;
   padding: 15px 15px 15px 50px;
   box-shadow: 0 1px 5px -1px rgba(0, 0, 0, 0.2117647059);
   font-size: 16px;
   background: #fff;
   vertical-align: top;
-  max-width: 100%;
-  min-width: 100%;
-  min-height: 45px;
+  max-width: calc(100% - 60px);
+  min-height: 50px;
   max-height: 300px;
   overflow-y: auto;
   resize: none;
   scrollbar-width: none;
   -ms-overflow-style: none;
   border: none;
-  border-radius: 10px;
+  border-radius: 18px;
 }
 .form__message-input::-webkit-scrollbar {
   display: none;
@@ -569,7 +589,8 @@ b {
 }
 .form__message-input[placeholder]:empty::before {
   content: attr(placeholder);
-  color: #242424;
+  color: rgba(36, 36, 36, 0.5);
+  line-height: 1.2;
   cursor: text;
 }
 .form__message-input [placeholder]:empty:focus::before {
@@ -577,11 +598,39 @@ b {
 }
 
 emoji-picker {
+  box-shadow: 0 5px 10px 5px #242424;
+  background: rgb(243, 245, 237);
+  --background: rgb(243 245 237);
+  --num-columns: 7;
+  --input-border-radius: 10px;
+  --input-border-size: 1px;
+  --input-border-color: rgba(0,0,0,.1);
+  --outline-size: 0;
+  --input-padding: 5px 10px;
+  --input-font-size: 14px;
+  --input-font-color: #242424;
+  --emoji-size: 25px;
+  --category-emoji-size: 20px;
+  --emoji-padding: 9px;
+  --indicator-color: #3390ec;
+  --indicator-height: 2px;
+  --button-hover-background: rgba(0,0,0,.05);
   position: absolute;
-  bottom: 70px;
-  left: 0;
-  border-radius: 10px;
+  bottom: 65px;
+  left: 10px;
+  border-radius: 18px;
+  box-shadow: 0 1px 5px -1px rgba(0, 0, 0, 0.2117647059);
   overflow: hidden;
+  transition: all 0.1s ease;
+  transform-origin: left bottom;
+  transform: translateX(-10px) scale(0.9);
+  opacity: 0;
+  visibility: hidden;
+}
+emoji-picker.active {
+  transform: translateX(0) scale(1);
+  opacity: 1;
+  visibility: visible;
 }
 
 .send-message-utils {
@@ -595,13 +644,15 @@ emoji-picker {
 .form__send-btn {
   width: 50px;
   height: 50px;
+  position: absolute;
+  right: 0;
   border-radius: 50%;
-  padding: 12px;
+  padding: 13px;
   margin-left: 10px;
   cursor: pointer;
   display: block;
   flex-shrink: 0;
-  background: #3390ec;
+  background: #2aa02f;
 }
 
 .btn-scroll-down {
@@ -611,7 +662,7 @@ emoji-picker {
   box-shadow: 0 1px 5px -1px rgba(0, 0, 0, 0.2117647059);
   border-radius: 100px;
   position: absolute;
-  right: -60px;
+  right: 0;
   top: -60px;
   background: #fff;
   cursor: pointer;
@@ -639,8 +690,11 @@ emoji-picker {
   transition: all 0.2s ease;
   fill: #707579;
 }
+.emoji-picker-btn.active path {
+  fill: #2aa02f;
+}
 .emoji-picker-btn:hover path {
-  fill: #000;
+  fill: #2aa02f;
 }
 
 .form_type_auth {
@@ -651,7 +705,7 @@ emoji-picker {
 }
 .form_type_auth .form__reg-link {
   text-decoration: underline;
-  color: #3390ec;
+  color: #2aa02f;
 }
 .form_type_auth .form-help {
   color: rgb(223, 63, 64);
@@ -695,7 +749,7 @@ emoji-picker {
 }
 
 .form__input_confirm_code.active {
-  border-color: #3390ec;
+  border-color: #2aa02f;
 }
 
 .app-404 {

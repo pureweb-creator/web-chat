@@ -10,7 +10,7 @@ class MessageModel extends Model
     {
         try {
             $stmt = $this->pdo->prepare("
-                SELECT message.*, user.id as sender_id, user.*
+                SELECT message.*, message.id as message_id, user.id as sender_id, user.*
                 FROM message
                 RIGHT JOIN user
                 ON message.message_from = user.id
