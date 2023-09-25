@@ -213,89 +213,96 @@
   position: sticky
   bottom: 0
 
+
+// MESSAGE BUBBLE BOX
 .message__text
-  display: flex
-  align-items: flex-end
   max-width: 480px
   min-width: 75px
   font-size: $fontSizeMedium
   background: $msgInBg
   border-radius: $radiusBig $radiusBig $radiusBig $radiusSmall
-  padding: 5px 13px 2px 11px
+  padding: 8px 8px 8px 11px
+  line-height: 1.3
   box-shadow: $messageShadow
   width: fit-content
   position: relative
   cursor: auto
+
+  .message__time-label
+    font-size: $fontSizeSmall
+    visibility: hidden
+
+  .message__time-inner
+    // opacity: .5
+    font-size: $fontSizeSmall
+    opacity: .5
+    display: block
+    position: absolute
+    right: 0
+    bottom: 4px
+    padding-right: 6px
+
   div
-    width: 100%
+    display: inline
     word-break: break-word
+
+  a
+    text-decoration: underline
+    color: $accentColor
 
   &.message__text_short
     background: transparent
     box-shadow: unset
     padding: 0
     text-align: right
+    .message__time-label
+      display: none
+    .message__time-inner
+      position: static
+      background-color: rgba($secondaryColor, 0.2)
+      display: table
+      margin-top: -5px
+      opacity: 1
+      color: #fff
+      margin-left: auto
+      border-radius: 30px
+      padding: 2px 7px 1px
     & > div
       font-size: 44px
 
-    .message_pub_date
-      display: block
-      margin-top: 0
-      right: 100px
-      float: unset
-      margin-left: 0
-      bottom: -20px
-      left: -15px
+  .message-utils
+    max-width: 200px
+    width: 200px
+    background: #fff
+    border-radius: $radius
+    box-shadow: $shadow
+    right: 20px
+    bottom: -85px
+    z-index: 2
+    opacity: 0
+    visibility: hidden
+    transition: all .2s ease
+    transform: scale(.8)
+    position: absolute
+    &__item
+      cursor: pointer
+      display: flex
+      align-items: center
+      padding: 10px 15px
+      &:hover
+        background: rgba($panelBorderColor, 0.2)
+      color: $secondaryColor
+      path
+        fill: $secondaryColor
+    &__icon
+      margin-right: 10px
+    &__delete
+      color: $dangerTextColor
+      path
+        fill: $dangerTextColor
 
-.message-utils
-  max-width: 200px
-  width: 200px
-  background: #fff
-  border-radius: $radius
-  box-shadow: $shadow
-  right: 20px
-  bottom: -85px
-  z-index: 2
-  opacity: 0
-  visibility: hidden
-  transition: all .2s ease
-  transform: scale(.8)
-  position: absolute
-  &__item
-    cursor: pointer
-    display: flex
-    align-items: center
-    padding: 10px 15px
-    &:hover
-      background: rgba($panelBorderColor, 0.2)
-    color: $secondaryColor
-    path
-      fill: $secondaryColor
-  &__icon
-    margin-right: 10px
-  &__delete
-    color: $dangerTextColor
-    path
-      fill: $dangerTextColor
 
-.message__text span
-  opacity: .5
-  font-size: $fontSizeSmall
-  display: inline-block
-  width: 100%
-  text-align: right
-  float: right
-  margin-top: -10px
-  margin-left: 7px
-
-.message__text
-  a
-    text-decoration: underline
-    color: $accentColor
-
-.message__text_big span
-  margin-top: 0
-
+// FOOTER
 .footer
   padding-top: 5px
   width: 100%

@@ -19,8 +19,8 @@ abstract class Helper
         $_SESSION['response'] = $response;
     }
 
-    public static function darken_color($rgb, $darker=2) {
-
+    public static function darken_color($rgb, $darker=2): string
+    {
         $hash = (str_contains($rgb, '#')) ? '#' : '';
         $rgb = (strlen($rgb) == 7) ? str_replace('#', '', $rgb) : ((strlen($rgb) == 6) ? $rgb : false);
         if(strlen($rgb) != 6) return $hash.'000000';

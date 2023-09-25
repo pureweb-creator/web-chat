@@ -10,8 +10,10 @@ class MessageModel extends Model
     {
         try {
             $stmt = $this->pdo->prepare("
-                SELECT message.*
+                SELECT message.*, user.id as sender_id, user.*
                 FROM message
+                RIGHT JOIN user
+                ON message.message_from = user.id
                 WHERE (message.message_from = :message_from AND message.message_to = :message_to) OR
                        (message.message_from = :message_to AND message.message_to = :message_from)
                 ORDER BY message.message_pub_date

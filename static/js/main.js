@@ -42,6 +42,9 @@ $(document).ready(function(){
             this.wsListen()
         },
         methods: {
+            test() {
+                console.log("HI")
+            },
             inputText(e) {
                 this.message.message_text = e.target.innerText
 

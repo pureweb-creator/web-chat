@@ -19,12 +19,27 @@
             <a :href="'#'+index"
                draggable="false"
                 :class="['message__text', {
-                    'message__text_short':  message.message_text.length <= 6,
-                    'message__text_big': message.message_text.length >= 74,
+                    'message__text_short':  message.message_text.length <= 6
                 }]">
-                <div v-html='message.message_text+"<span class=\"message_pub_date\">"+getTimeFromDateTime(message.message_pub_date)+"</span>"'>
+                <div v-html='message.message_text'>
 
                 </div>
+                <span class="message__time">
+                    <div class="message__time-label">
+                        [[ getTimeFromDateTime(message.message_pub_date) ]]
+                        {# <span v-if='message.sender_id == {{ session.logged_user.id }}'>
+                            <span v-if="message.seen">read</span>
+                            <span v-else>unread</span>
+                        </span> #}
+                    </div>
+                    <div class="message__time-inner">
+                        {# <span v-if='message.sender_id == {{ session.logged_user.id }}'>
+                            <span v-if="message.seen">read</span>
+                            <span v-else>unread</span>
+                        </span> #}
+                        [[getTimeFromDateTime(message.message_pub_date)]]
+                    </div>
+                </span>
                 {% include 'components/utils.twig' %}
             </a>
         </li>
