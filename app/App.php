@@ -14,7 +14,7 @@ ini_set('display_errors', DEBUG_MODE);
 ini_set('log_errors', 'on');
 ini_set('error_log', __DIR__.'/../debug.log');
 
-$logger = new Logger('main');
+$logger = new Logger('web-chat');
 $logger->pushHandler(new StreamHandler(__DIR__.'/../debug.log', Level::Warning));
 
 // Updates every session

@@ -1,12 +1,15 @@
 @mixin scrollbar()
   &::-webkit-scrollbar
-    width: 4px
-    background: rgba(#000, .1)
+    width: 7px
+    background: transparent
+    position: absolute
   &::-webkit-scrollbar-thumb
-    background: rgba(#000, .5)
-    border-radius: 5px
+    background: $panelBorderColor
+    position: absolute
+    border-right: 1px solid $panelColor
+    border-radius: 10px
     &:hover
-      background: rgba(#000, .5)
+      background: $panelBorderColor
 
 @mixin userpic($width)
   width: $width

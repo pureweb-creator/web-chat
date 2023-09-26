@@ -19,7 +19,7 @@ class LoginController extends Controller
         parent::__construct();
 
         $this->view = $view;
-        $this->userModel = new UserModel($logger);
+        $this->userModel = new UserModel();
     }
 
     public function index(): void

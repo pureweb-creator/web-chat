@@ -21,7 +21,7 @@ class ConfirmController extends Controller
         parent::__construct();
         $this->view = $view;
         $this->logger = $logger;
-        $this->userModel = new UserModel($logger);
+        $this->userModel = new UserModel();
     }
     public function index(): void
     {
@@ -51,13 +51,39 @@ class ConfirmController extends Controller
         if (empty($code))
             Helper::response('No confirmation code', false);
 
-        $user = $this->userModel->loadUser('email',$email)[0];
-        if ($user['confirmation_code'] !== $code)
-            Helper::response('Wrong confirmation code', false);
+        $user = $this->userModel->loadUser('email', $email)[0];
 
-        $this->userModel->updateConfirmationStatus($email, 1);
+        if ($user['is_banned'] && time() > strtotime($user['banned_until'])) {
+            # unban user
+            $this->userModel->update($email, 'is_banned', 0);
+            $this->userModel->update($email, 'banned_until', null);
+            $this->userModel->update($email, 'login_attempts', 0);
+        }
+        else if ($user['is_banned'] && time() < strtotime($user['banned_until']))
+            Helper::response('You were banned. Try again after 24 hours.', false);
+
+        if ($user['confirmation_code'] !== $code) {
+
+            $login_attempts = $this->userModel->loadUser('email', $email, 'login_attempts')[0]['login_attempts'];
+
+            if ($login_attempts < MAX_LOGIN_ATTEMPTS-1){
+                $login_attempts++;
+                $this->userModel->update($email, 'login_attempts', $login_attempts);
+                $attempts_left=MAX_LOGIN_ATTEMPTS-$login_attempts;
+                Helper::response("Wrong confirmation code. Attempts left: $attempts_left", false);
+            }
+
+            if ($login_attempts == MAX_LOGIN_ATTEMPTS-1){
+                $this->userModel->update($email, 'is_banned', true);
+                $this->userModel->update($email, 'banned_until', date('Y-m-d H:i:s', time()+3600*24));
+                Helper::response('You were banned. Try again after 24 hours.', false);
+            }
+        }
+
+        $this->userModel->update($email, 'confirmed', 1); # for registration only
+        $this->userModel->update($email, 'login_attempts', 0);
         $_SESSION['logged_user'] = $user;
-        $this->userModel->updateConfirmationCode($email, '');
+        $this->userModel->update($email, 'confirmation_code', '');
 
         Helper::response();
     }
@@ -65,11 +91,12 @@ class ConfirmController extends Controller
     public function sendConfirmation($email): void
     {
         $confirmation_code = rand(10000, 99999);
-        $this->userModel->updateConfirmationCode($email, $confirmation_code);
+        $this->userModel->update($email, 'confirmation_code', $confirmation_code);
 
         $mail = new PHPMailer();
         try{
             $mail->isSMTP();
+            $mail->SMTPDebug  = false;
             $mail->Host       = GOOGLE_SMTP_HOST;
             $mail->SMTPAuth   = true;
             $mail->Username   = GOOGLE_SMTP_USERNAME;
@@ -87,7 +114,6 @@ class ConfirmController extends Controller
             $mail->send();
 
         } catch (\Exception $e){
-            Helper::response('Email does not sent. Please, try again later.', false, true);
             $this->logger->error("Message could not be sent. Mail error: {$mail->ErrorInfo}");
         }
     }

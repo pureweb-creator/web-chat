@@ -4,7 +4,7 @@ let confirm = new Vue({
     data() {
         return {
             email: "",
-            code: [null,null,null,null,null],
+            code: ['','','','',''],
             _token: "",
             response: {}
         }
@@ -16,37 +16,37 @@ let confirm = new Vue({
     },
 
     methods: {
-        fillCode(event, i){
-            // handle Ctrl+V hotkey and fill all inputs
-            if (event.keyCode===86 && event.ctrlKey) {
-                let inputCode = event.target.value.trim().split('')
-                this.code.splice(0, inputCode.length, ...inputCode)
+        pasteCode(e, i){
+            let clipboardData = e.clipboardData || window.clipboardData;
+            let pastedData = clipboardData.getData('Text');
+            let inputCode = pastedData.trim().split('')
 
-                let currentSibling = event.target
-                for (let i=0; i<this.code.length; i++){
-                    if (this.code[i]!==null)
-                        currentSibling.classList.add("active")
-                    currentSibling = currentSibling.nextElementSibling
-                }
-
-                this.doConfirm()
-            }
-
-            // handle manual input. Allow only letters and numbers
-            const allowedKeys = /^[a-zA-Z0-9\s]$/;
-            if (i!==this.code.length-1 && allowedKeys.test(event.key))
-                event.target.nextElementSibling.focus()
-
-            // on backspace go back
-            if (event.keyCode===8 && i!==0)
-                event.target.previousElementSibling.focus()
-
-            // add active class to filled input
-            this.code[i] ? event.target.classList.add("active") : event.target.classList.remove("active")
+            this.code.forEach((element, index)=>{
+                this.code[index] = inputCode[index]
+            })
 
             // send form
-            if (this.code.every(element => element !== null))
+            if (this.code.every(element => element !== ''))
                 this.doConfirm()
+
+            this.$refs.codeInput[this.code.length-1].focus()
+
+        },
+        manualEnterCode(e, i){
+            // handle manual input. Allow only letters and numbers
+            if (e.key >= '0' && e.key <= '9') {
+                const allowedKeys = /^[a-zA-Z0-9\s]$/;
+                if (i !== this.code.length - 1 && allowedKeys.test(e.key))
+                    e.target.nextElementSibling.focus()
+
+                // on backspace go back
+                if (e.keyCode === 8 && i !== 0)
+                    e.target.previousElementSibling.focus()
+
+                // send form
+                if (this.code.every(element => element !== ''))
+                    this.doConfirm()
+            }
         },
 
         doConfirm: function () {
@@ -63,6 +63,13 @@ let confirm = new Vue({
                 .then(
                     response => {
                         this.response = response.data
+
+                        if (this.response.success === false) {
+                            setTimeout(() =>{
+                                this.code = this.code.map(() => '')
+                                this.$refs.codeInput[0].focus()
+                            }, 100)
+                        }
 
                         if (this.response.success === true)
                             window.location.href = "./"

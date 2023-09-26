@@ -14,15 +14,16 @@ class HomeController extends Controller{
     protected UserModel $userModel;
     protected MessageModel $messageModel;
     protected View $view;
+    protected Logger $logger;
 
     public function __construct(View $view, Logger $logger)
     {
         parent::__construct();
 
         $this->view = $view;
-
-        $this->userModel = new UserModel($logger);
-        $this->messageModel = new MessageModel($logger);
+        $this->logger = $logger;
+        $this->userModel = new UserModel();
+        $this->messageModel = new MessageModel();
     }
 
     public function index(): void

@@ -2,9 +2,11 @@
 
 namespace App\Core;
 
+use App\Exceptions\NotFoundException;
 use Monolog\Handler\StreamHandler;
 use Monolog\Level;
 use Monolog\Logger;
+use PHPMailer\PHPMailer\Exception;
 
 /**
  * Router
@@ -29,7 +31,7 @@ final class Router{
 
             // Does the class e.g. "\User\List\View" exist?
             if (!class_exists($controller_full_name) || !method_exists($controller_full_name, $controller_method))
-                throw new \Exception("Page not found");
+                throw new NotFoundException("Page not found");
 
             // E.g. "\App\Controllers\UserController"
             $controller = new $controller_full_name(
@@ -39,7 +41,7 @@ final class Router{
             // Finally, call matched method
             $controller->$controller_method();
 
-        } catch (\Exception $e){
+        } catch (NotFoundException $e){
             header("HTTP/1.1 404 Not Found");
             header("Status: 404 Not Found");
 
@@ -48,6 +50,16 @@ final class Router{
                 $view, $logger
             );
             $page_404->index();
+        } catch (\PDOException $e) {
+            header("HTTP/1.1 500 Internal Server Error");
+            header("Status: 500 Internal Server Error");
+
+            $logger->critical("Database Error: ".$e->getMessage()." in ". $e->getFile()." on line ".$e->getLine());
+        } catch (\Exception $e){
+            header("HTTP/1.1 500 Internal Server Error");
+            header("Status: 500 Internal Server Error");
+
+            $logger->error("General Error: ".$e->getMessage()." in ". $e->getFile()." on line ".$e->getLine());
         }
     }
 

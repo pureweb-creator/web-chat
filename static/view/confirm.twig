@@ -11,12 +11,14 @@
 
             <div class="form__confirm_code">
                 <input
+                    ref="codeInput"
                     type="text"
                     v-for="(item, i) in code"
                     v-model="code[i]"
-                    @keyup="fillCode($event, i)"
-                    class="form__input form__input_confirm_code"
-                    maxlength="5"
+                    @keyup="manualEnterCode($event, i)"
+                    @paste.prevent="pasteCode($event, i)"
+                    :class="['form__input', 'form__input_confirm_code', {'active': code[i]}]"
+                    maxlength="1"
                 >
             </div>
 

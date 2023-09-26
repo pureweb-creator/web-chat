@@ -15,8 +15,8 @@ class WebsocketController extends \App\Core\Controller
     public function __construct(Logger $logger)
     {
         parent::__construct();
-        $this->messageModel = new MessageModel($logger);
-        $this->userModel = new UserModel($logger);
+        $this->messageModel = new MessageModel();
+        $this->userModel = new UserModel();
     }
 
     public function listen(): void
