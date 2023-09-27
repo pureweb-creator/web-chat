@@ -2,17 +2,17 @@
 
 namespace App\Controllers;
 
+use App\Core\Controller;
 use App\Core\Helper;
 use App\Models\MessageModel;
 use App\Models\UserModel;
-use Monolog\Logger;
 use Workerman\Worker;
 
-class WebsocketController extends \App\Core\Controller
+class WebsocketController extends Controller
 {
     protected MessageModel $messageModel;
     protected UserModel $userModel;
-    public function __construct(Logger $logger)
+    public function __construct()
     {
         parent::__construct();
         $this->messageModel = new MessageModel();

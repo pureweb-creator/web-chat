@@ -134,6 +134,24 @@ b {
   background: #1f7823;
 }
 
+.form-help_status_error {
+  padding: 0.75rem 1.25rem;
+  border-radius: 10px;
+  margin: 7px 0;
+  color: rgb(223, 63, 64);
+  background: #f8d7da;
+  border: 1px solid #f5c6cb;
+}
+
+.form-help_status_info {
+  padding: 0.75rem 1.25rem;
+  border-radius: 10px;
+  margin: 7px 0;
+  color: rgb(5, 44, 101);
+  background: rgb(207, 226, 255);
+  border: 1px solid rgb(158, 197, 254);
+}
+
 .app_home {
   margin-top: 0px !important;
 }
@@ -708,11 +726,6 @@ emoji-picker.active {
   color: #2aa02f;
 }
 .form_type_auth .form-help {
-  color: rgb(223, 63, 64);
-  background: #f8d7da;
-  border: 1px solid #f5c6cb;
-  padding: 0.75rem 1.25rem;
-  border-radius: 10px;
   margin-bottom: 15px;
 }
 

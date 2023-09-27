@@ -44,3 +44,9 @@
     text-transform: uppercase
     &:hover
       background: darken($accentColor, 10)
+
+.form-help_status_error
+  @include alert_style($dangerTextColor, $dangerBgColor, $dangerBorderColor)
+
+.form-help_status_info
+  @include alert_style($infoTextColor, $infoBgColor, $infoBorderColor)
