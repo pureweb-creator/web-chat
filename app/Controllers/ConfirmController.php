@@ -80,6 +80,9 @@ class ConfirmController extends Controller
             }
         }
 
+        if (time() > strtotime($user['code_expiry_date']))
+            Helper::response('This login code has expired. Reload page to get a new one', false);
+
         $this->userModel->update($email, 'confirmed', 1); # for registration only
         $this->userModel->update($email, 'login_attempts', 0);
         $_SESSION['logged_user'] = $user;
@@ -92,6 +95,7 @@ class ConfirmController extends Controller
     {
         $confirmation_code = rand(10000, 99999);
         $this->userModel->update($email, 'confirmation_code', $confirmation_code);
+        $this->userModel->update($email, 'code_expiry_date', date('Y-m-d H:i:s', time()+60*10));
 
         $mail = new PHPMailer();
         try{

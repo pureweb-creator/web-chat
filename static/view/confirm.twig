@@ -23,10 +23,14 @@
             </div>
 
             {% if session.response is defined and session.response.success==false %}
-                <p class="form-help">{{ session.response.message }}</p>
+                <p class="form-help form-help_status_error">{{ session.response.message }}</p>
             {% endif %}
 
-            <p class="form-help" v-if="response.success==false">[[ response.message ]]</p>
+            <p class="form-help_status_info">
+                Check your e-mail for confirmation code. This code will be available for 10 minutes.
+            </p>
+
+            <p class="form-help form-help_status_error" v-if="response.success==false">[[ response.message ]]</p>
         </form>
     </div>
 </main>

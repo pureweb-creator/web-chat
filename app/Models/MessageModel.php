@@ -37,6 +37,6 @@ class MessageModel extends Model
 
     public function deleteMessage($msgId){
         $stmt = $this->pdo->prepare("DELETE FROM message WHERE id = ?");
-        $stmt->execute([$msgId]);
+        return $stmt->execute([$msgId]);
     }
 }
