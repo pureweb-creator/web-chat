@@ -162,6 +162,7 @@ b {
 .wrapper {
   display: flex;
   height: 100vh;
+  overflow-x: hidden;
 }
 
 .empty-message {
@@ -172,13 +173,28 @@ b {
   color: #fff;
 }
 
+.menu-button {
+  display: none;
+  width: 25px;
+  margin-right: 15px;
+  cursor: pointer;
+}
+.menu-button svg {
+  max-width: 100%;
+}
+.menu-button svg path {
+  fill: #707579;
+}
+
 .users {
   width: 400px;
+  max-width: 100%;
   flex-shrink: 0;
   background: #fff;
   overflow-y: hidden;
   border-right: 1px solid #cdcdd0;
   padding: 10px 15px 10px 7px;
+  transition: transform 0.3s ease;
   color: #000;
 }
 .users::-webkit-scrollbar {
@@ -194,6 +210,10 @@ b {
 }
 .users::-webkit-scrollbar-thumb:hover {
   background: #cdcdd0;
+}
+.users.opened {
+  z-index: 4;
+  transform: translateX(0);
 }
 .users:hover {
   overflow-y: auto;
@@ -265,6 +285,7 @@ b {
   width: 100%;
   overflow: hidden;
   position: relative;
+  transition: all 0.3s ease;
 }
 
 .recipient-panel {
@@ -399,13 +420,13 @@ b {
   position: absolute;
 }
 .app-body::-webkit-scrollbar-thumb {
-  background: #cdcdd0;
+  background: rgba(0, 0, 0, 0.5);
   position: absolute;
-  border-right: 1px solid #fff;
+  border-right: 1px solid #e17c54;
   border-radius: 10px;
 }
 .app-body::-webkit-scrollbar-thumb:hover {
-  background: #cdcdd0;
+  background: rgba(0, 0, 0, 0.5);
 }
 
 .messages {
@@ -423,13 +444,57 @@ b {
   margin: 4px 0;
   position: relative;
 }
+.message__item .message-utils {
+  max-width: 200px;
+  width: auto;
+  background: #fff;
+  border-radius: 10px 10px 10px;
+  box-shadow: 0 1px 5px -1px rgba(0, 0, 0, 0.2117647059);
+  left: -102px;
+  bottom: 0;
+  z-index: 2;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s ease;
+  transform: scale(0.95) translateY(10px);
+  position: absolute;
+}
+.message__item .message-utils__item {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 7px 15px;
+  font-weight: 500;
+}
+.message__item .message-utils__item:hover {
+  background: rgba(205, 205, 208, 0.2);
+}
+.message__item .message-utils__item path {
+  fill: #242424;
+}
+.message__item .message-utils__icon {
+  margin-right: 10px;
+}
+.message__item .message-utils__delete {
+  color: rgb(223, 63, 64);
+}
+.message__item .message-utils__delete path {
+  fill: rgb(223, 63, 64);
+}
 .message__item.active .message-utils {
   opacity: 1;
   visibility: visible;
+  transform: scale(1) translateX(-10px);
+}
+.message__item_self.active .message-utils {
   transform: scale(1) translateX(10px);
 }
 .message__item_self {
   justify-content: flex-end;
+}
+.message__item_self .message-utils {
+  left: unset;
+  right: -102px;
 }
 .message__item_self .message__text_short {
   text-align: right;
@@ -450,23 +515,6 @@ b {
 .message__item__icon {
   margin-right: 5px;
   width: 20px;
-}
-
-.message__userpic {
-  width: 35px;
-  height: 35px;
-  font-size: 11.6666666667px;
-  border-radius: 50%;
-  -o-object-fit: cover;
-     object-fit: cover;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  font-weight: 500;
-  margin-right: 5px;
-  position: sticky;
-  bottom: 0;
 }
 
 .message__text {
@@ -526,44 +574,6 @@ b {
 .message__text.message__text_short > div {
   font-size: 44px;
 }
-.message__text .message-utils {
-  max-width: 200px;
-  width: 140px;
-  background: #fff;
-  border-radius: 10px 10px 10px;
-  box-shadow: 0 1px 5px -1px rgba(0, 0, 0, 0.2117647059);
-  right: -140px;
-  bottom: 0;
-  z-index: 2;
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.2s ease;
-  transform: scale(0.95) translateY(-10px);
-  transfrom-origin: 100% 50%;
-  position: absolute;
-}
-.message__text .message-utils__item {
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  padding: 7px 15px;
-  font-weight: 500;
-}
-.message__text .message-utils__item:hover {
-  background: rgba(205, 205, 208, 0.2);
-}
-.message__text .message-utils__item path {
-  fill: #242424;
-}
-.message__text .message-utils__icon {
-  margin-right: 10px;
-}
-.message__text .message-utils__delete {
-  color: rgb(223, 63, 64);
-}
-.message__text .message-utils__delete path {
-  fill: rgb(223, 63, 64);
-}
 
 .footer {
   width: 100%;
@@ -616,6 +626,7 @@ b {
 }
 
 emoji-picker {
+  max-width: 100%;
   box-shadow: 0 5px 10px 5px #242424;
   background: rgb(243, 245, 237);
   --background: rgb(243 245 237);
@@ -639,7 +650,7 @@ emoji-picker {
   border-radius: 18px;
   box-shadow: 0 1px 5px -1px rgba(0, 0, 0, 0.2117647059);
   overflow: hidden;
-  transition: all 0.1s ease;
+  transition: all 0.2s ease;
   transform-origin: left bottom;
   transform: translateX(-10px) scale(0.9);
   opacity: 0;
@@ -781,4 +792,62 @@ emoji-picker.active {
   text-decoration: underline;
   margin-top: 32px;
   line-height: 150%;
+}
+
+@media screen and (max-width: 1200px) {
+  .message__text .message-utils {
+    right: unset;
+    left: 5px;
+    bottom: 0;
+    transform: scale(0.95) translateY(0px);
+  }
+  .message__item.active .message-utils {
+    transform: scale(1) translateY(-5px);
+  }
+  .message__item_self .message-utils {
+    left: unset;
+    right: 5px;
+  }
+}
+@media screen and (max-width: 900px) {
+  .menu-button {
+    display: block;
+  }
+  .users {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    transform: translateX(-100%);
+    height: 100%;
+  }
+  .main-window.collapsed {
+    transform: translateX(400px);
+  }
+}
+@media screen and (max-width: 500px) {
+  .app-body {
+    padding: 0 9px 0 10px;
+  }
+  .app-body::-webkit-scrollbar {
+    width: 1px;
+    background: transparent;
+    position: absolute;
+  }
+  .app-body::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.4);
+    position: absolute;
+    border-right: 1px solid #fff;
+    border-radius: 10px;
+  }
+  .app-body::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.4);
+  }
+  .messages {
+    padding-right: 0;
+    padding-left: 0;
+  }
+  .message__text {
+    max-width: 330px;
+  }
 }

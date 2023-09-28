@@ -10,7 +10,7 @@ services:
     restart: always
     ports:
       - "80:80"
-      - "8000:443"
+      - "8000:80"
       - "443:443"
     volumes:
       - ./:/var/www/web-chat.loc

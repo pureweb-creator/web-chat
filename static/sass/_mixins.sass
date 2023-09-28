@@ -1,15 +1,15 @@
-@mixin scrollbar()
+@mixin scrollbar($width:7px, $bg: $panelBorderColor, $borderColor: $panelColor)
   &::-webkit-scrollbar
-    width: 7px
+    width: $width
     background: transparent
     position: absolute
   &::-webkit-scrollbar-thumb
-    background: $panelBorderColor
+    background: $bg
     position: absolute
-    border-right: 1px solid $panelColor
+    border-right: 1px solid $borderColor
     border-radius: 10px
     &:hover
-      background: $panelBorderColor
+      background: $bg
 
 @mixin userpic($width)
   width: $width

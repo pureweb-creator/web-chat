@@ -7,6 +7,7 @@
 .wrapper
   display: flex
   height: 100vh
+  overflow-x: hidden
 
 .empty-message
   height: 100%
@@ -15,15 +16,32 @@
   justify-content: center
   color: #fff
 
+.menu-button
+  display: none
+  width: 25px
+  margin-right: 15px
+  cursor: pointer
+
+  svg
+    max-width: 100%
+    path
+      fill: $secondaryColor
+
 .users
-  width: 400px
+  width: $usersPanelWidth
+  max-width: 100%
   flex-shrink: 0
   background: $panelColor
   overflow-y: hidden
   border-right: 1px solid $panelBorderColor
   padding: 10px 15px 10px 7px
+  transition: transform .3s ease
   color: #000
   @include scrollbar()
+
+  &.opened
+    z-index: 4
+    transform: translateX(0)
 
   &:hover
     overflow-y: auto
@@ -82,6 +100,7 @@
   width: 100%
   overflow: hidden
   position: relative
+  transition: all .3s ease
 
 .recipient-panel
   background: $panelColor
@@ -179,7 +198,7 @@
   height: 100%
   overflow-y: auto
   overflow-x: hidden
-  @include scrollbar()
+  @include scrollbar(7px, rgba(#000, .5), #e17c54)
   scroll-behavior: smooth
 
 .messages
@@ -195,13 +214,53 @@
   align-items: flex-end
   margin: 4px 0
   position: relative
-  
+
+  .message-utils
+    max-width: 200px
+    width: auto
+    background: #fff
+    border-radius: $radius $radius $radius
+    box-shadow: $shadow
+    left: -102px
+    bottom: 0
+    z-index: 2
+    opacity: 0
+    visibility: hidden
+    transition: all .2s ease
+    transform: scale(0.95) translateY(10px)
+    position: absolute
+    &__item
+      cursor: pointer
+      display: flex
+      align-items: center
+      padding: 7px 15px
+      font-weight: 500
+      &:hover
+        background: rgba($panelBorderColor, 0.2)
+      path
+        fill: $textColor
+    &__icon
+      margin-right: 10px
+    &__delete
+      color: $dangerTextColor
+      path
+        fill: $dangerTextColor
+
   &.active .message-utils
     opacity: 1
     visibility: visible
+    transform: scale(1) translateX(-10px)
+
+  &_self.active .message-utils
     transform: scale(1) translateX(10px)
+
   &_self
     justify-content: flex-end
+
+    .message-utils
+      left: unset
+      right: -102px
+      
     .message__text_short
       text-align: right
     .message__userpic
@@ -219,12 +278,6 @@
   &__icon
     margin-right: 5px
     width: 20px
-
-.message__userpic
-  @include userpic(35px)
-  margin-right: 5px
-  position: sticky
-  bottom: 0
 
 
 // MESSAGE BUBBLE BOX
@@ -282,39 +335,6 @@
     & > div
       font-size: 44px
 
-  .message-utils
-    max-width: 200px
-    width: 140px
-    background: #fff
-    border-radius: $radius $radius $radius
-    box-shadow: $shadow
-    right: -140px
-    bottom: 0
-    z-index: 2
-    opacity: 0
-    visibility: hidden
-    transition: all .2s ease
-    transform: scale(0.95) translateY(-10px)
-    transfrom-origin: 100% 50%
-    position: absolute
-    &__item
-      cursor: pointer
-      display: flex
-      align-items: center
-      padding: 7px 15px
-      font-weight: 500
-      &:hover
-        background: rgba($panelBorderColor, 0.2)
-      path
-        fill: $textColor
-    &__icon
-      margin-right: 10px
-    &__delete
-      color: $dangerTextColor
-      path
-        fill: $dangerTextColor
-
-
 // FOOTER
 .footer
   width: 100%
@@ -360,6 +380,7 @@
     content: ""
 
 emoji-picker
+  max-width: 100%
   box-shadow: 0 5px 10px 5px #242424
   background: rgb(243 245 237)
   --background: rgb(243 245 237)
@@ -384,7 +405,7 @@ emoji-picker
   border-radius: $radiusBig
   box-shadow: $shadow
   overflow: hidden
-  transition: all .1s ease
+  transition: all .2s ease
   transform-origin: left bottom
   transform: translateX(-10px) scale(0.9)
   opacity: 0
@@ -485,7 +506,6 @@ emoji-picker
   text-transform: uppercase
   text-align: center
   border-width: 2px
-
 
 .form__input_confirm_code:focus, .form__input_confirm_code:hover
   border-color: #e6e6e6

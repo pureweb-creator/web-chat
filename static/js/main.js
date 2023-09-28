@@ -11,6 +11,7 @@ $(document).ready(function(){
                 firstMessageID: 0,
                 scrollDownTrigger: false,
                 activeItem: null,
+                activeUsersPanel: false,
                 _token: "",
                 startTyping: null,
                 typing: null,
