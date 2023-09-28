@@ -7,13 +7,13 @@
         <form class="form form_type_auth" @submit.prevent="doSignup">
             <input type="hidden" name="_token" value="{{ session._token }}" ref="_token">
             <label for="name" class="form__label">
-                <input type="text" class="form__input" placeholder="Name" v-model="name">
+                <input type="text" autocomplete="name" class="form__input" placeholder="Name" v-model="name">
             </label>
             <label for="tel" class="form__label">
-                <input type="email" class="form__input" placeholder="E-mail" v-model="email">
+                <input type="email" autocomplete="email" class="form__input" placeholder="E-mail" v-model="email">
             </label>
 
-            <p class="form-help" v-if="response.success==false">[[response.message]]</p>
+            <p class="form-help form-help_status_error" v-if="response.success==false">[[response.message]]</p>
 
             <button type="submit" class="btn form__btn">Next</button>
 

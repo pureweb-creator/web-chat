@@ -42,7 +42,7 @@ class LoginController extends Controller
             Helper::response('No email.', false);
 
         if (!$this->userModel->loadUser('email', $email))
-            Helper::response('User with that email doesn\'t exists.', false);
+            Helper::response('User with that email does not exist.', false);
 
         Helper::response();
     }

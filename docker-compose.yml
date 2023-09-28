@@ -9,12 +9,14 @@ services:
     container_name: nginx-web-chat
     restart: always
     ports:
-      - 80:80
-      - 8000:80
+      - "80:80"
+      - "8000:443"
+      - "443:443"
     volumes:
       - ./:/var/www/web-chat.loc
       - ./.docker/nginx/conf.d:/etc/nginx/conf.d
       - ./.docker/nginx/logs:/var/log/nginx
+      - ./.docker/nginx/certs:/etc/nginx/certs
     depends_on:
       - php-web-chat
     networks:
@@ -45,6 +47,7 @@ services:
       context: ./
       dockerfile: .docker/php/Dockerfile
     container_name: ws-web-chat
+    restart: always
     volumes:
       - ./:/var/www/web-chat.loc
       - /var/www/web-chat.loc/vendor
@@ -85,7 +88,7 @@ services:
     image: phpmyadmin
     container_name: pma-web-chat
     ports:
-      - 8080:80
+      - "8080:80"
     environment:
       - PMA_ARBITRARY=1
       - PMA_HOST=mysql

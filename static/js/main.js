@@ -225,8 +225,15 @@ $(document).ready(function(){
 
                                 let lastSeenHourMinute = (new Date(lastSeenInMilliseconds).toLocaleTimeString()).slice(0, 5)
                                 let lastSeenMonthDay = (new Date(lastSeenInMilliseconds).toLocaleDateString()).slice(0, 5)
+                                let lastSeenYear = (new Date(lastSeenInMilliseconds).toLocaleDateString()).slice(6)
 
                                 let lastSeenString
+
+                                if (lastSeenInMinutes<1)
+                                    lastSeenString = `last seen just now`
+
+                                if (lastSeenInDays < 1)
+                                    lastSeenString = `last seen at ${lastSeenHourMinute}`
 
                                 if (lastSeenInDays===1)
                                     lastSeenString = `last seen yesterday at ${lastSeenHourMinute}`
@@ -234,20 +241,8 @@ $(document).ready(function(){
                                 if (lastSeenInDays > 1)
                                     lastSeenString = `last seen ${lastSeenMonthDay} at ${lastSeenHourMinute}`
 
-                                if ([...Array(24).keys()].includes(lastSeenInHours))
-                                    lastSeenString = `last seen ${lastSeenInHours} hours ago`
-
-                                if (lastSeenInHours===1)
-                                    lastSeenString = `last seen ${lastSeenInHours} hour ago`
-
-                                if ([...Array(60).keys()].includes(lastSeenInMinutes))
-                                    lastSeenString = `last seen ${lastSeenInMinutes} minutes ago`
-
-                                if (lastSeenInMinutes === 1)
-                                    lastSeenString = `last seen ${lastSeenInMinutes} minute ago`
-
-                                if (lastSeenInMinutes<1)
-                                    lastSeenString = `last seen just now`
+                                if (lastSeenInDays >= 365)
+                                    lastSeenString = `last seen ${lastSeenMonthDay}.${lastSeenYear} at ${lastSeenHourMinute}`
 
                                 this.user.isOnline = element.online
                                 this.user.lastSeen = this.user.isOnline ? "online" : lastSeenString

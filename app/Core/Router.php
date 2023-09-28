@@ -3,10 +3,7 @@
 namespace App\Core;
 
 use App\Exceptions\NotFoundException;
-use Monolog\Handler\StreamHandler;
-use Monolog\Level;
 use Monolog\Logger;
-use PHPMailer\PHPMailer\Exception;
 
 /**
  * Router

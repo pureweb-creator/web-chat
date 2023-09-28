@@ -28,9 +28,7 @@ class HomeController extends Controller{
 
     public function index(): void
     {
-        // check user role
-        if (!isset($_SESSION['logged_user']))
-            header('Location: ./login');
+        Middleware::Authentication('user');
 
         $message_to = $_GET['uid'] ?? -1;
 

@@ -14,8 +14,13 @@ ini_set('display_errors', DEBUG_MODE);
 ini_set('log_errors', 'on');
 ini_set('error_log', __DIR__.'/../debug.log');
 
-$logger = new Logger('web-chat');
+$logger = new Logger('php-web-chat');
 $logger->pushHandler(new StreamHandler(__DIR__.'/../debug.log', Level::Warning));
+
+if ($_SERVER['HTTPS']!="on") {
+    $redirect = "https://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+    header("Location:$redirect");
+}
 
 // Updates every session
 if (!isset($_SESSION['_token']))
