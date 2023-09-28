@@ -17,9 +17,9 @@ ini_set('error_log', __DIR__.'/../debug.log');
 $logger = new Logger('php-web-chat');
 $logger->pushHandler(new StreamHandler(__DIR__.'/../debug.log', Level::Warning));
 
-if ($_SERVER['HTTPS']!="on") {
+if ($_SERVER['REQUEST_SCHEME']=="http") {
     $redirect = "https://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-    header("Location:$redirect");
+    header("Location: $redirect");
 }
 
 // Updates every session
