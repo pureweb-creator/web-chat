@@ -14,6 +14,7 @@ class WebsocketController extends Controller
     protected MessageModel $messageModel;
     protected UserModel $userModel;
     protected Logger $logger;
+    
     public function __construct(Logger $logger)
     {
         parent::__construct();

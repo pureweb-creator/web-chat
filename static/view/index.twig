@@ -5,15 +5,11 @@
         <div class="container">
             <div class="wrapper">
                 {% include 'components/sidebar.twig' %}
-                <section :class="['main-window', {collapsed: activeUsersPanel}]">
+                <section :class="['main-window', {collapsed: isActiveUsersPanel}]">
                     {% if message_to != false %}
                         {% include 'components/header.twig' %}
                         {% include 'components/body.twig' %}
                         {% include 'components/footer.twig' %}
-                    {% else %}
-                        <div class="empty-message">
-                            Select chat to start messaging
-                        </div>
                     {% endif %}
                 </section>
             </div>

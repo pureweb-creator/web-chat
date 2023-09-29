@@ -13,6 +13,7 @@ let confirm = new Vue({
     mounted(){
         this._token = this.$refs._token.value
         this.email = this.$refs.email.value
+        this.$refs.codeInput[0].focus()
     },
 
     methods: {

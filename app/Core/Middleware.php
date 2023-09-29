@@ -13,8 +13,10 @@ abstract class Middleware
                 break;
 
             case 'user':
-                if (!isset($_SESSION['logged_user']))
+                if (!isset($_SESSION['logged_user'])) {
                     header('Location: ./login');
+                    exit;
+                }
 
                 if ($userId && $userId !== $_SESSION['logged_user']['id']){
                     header($_SERVER['SERVER_PROTOCOL'] . ' 405 Method Not Allowed');

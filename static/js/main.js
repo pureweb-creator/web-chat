@@ -11,10 +11,10 @@ $(document).ready(function(){
                 firstMessageID: 0,
                 scrollDownTrigger: false,
                 activeItem: null,
-                activeUsersPanel: false,
+                isActiveUsersPanel: false,
                 _token: "",
-                startTyping: null,
-                typing: null,
+                isStartTyping: null,
+                typingEvent: null,
                 isVisibleScrollDownArrow: false,
                 messages: [],
                 message: {
@@ -74,30 +74,30 @@ $(document).ready(function(){
                 selection.addRange(range);
             },
             trackTypingEvent(e){
+                if (this.isStartTyping==null)
+                    this.isStartTyping=true
 
-                if (this.startTyping==null)
-                    this.startTyping=true
-
-                if (this.startTyping){
+                if (this.isStartTyping){
                     this.ws.send(JSON.stringify({
                         'action': 'startTyping',
                         'message_to': $('#messageTo').val()
                     }))
 
-                    this.startTyping=false
+                    this.isStartTyping=false
                 }
 
-                if(this.isTyping) {
-                    clearTimeout(this.isTyping);
-                    this.isTyping = null
+                if(this.typingEvent) {
+                    clearTimeout(this.typingEvent);
+                    this.typingEvent = null
                 }
 
-                this.isTyping = setTimeout(() =>  {
+                this.typingEvent = setTimeout(() =>  {
                     this.ws.send(JSON.stringify({
                         'action': 'endTyping',
                         'message_to': $('#messageTo').val()
                     }))
-                    this.startTyping=null
+
+                    this.isStartTyping=null
                 }, 1500)
 
             },
