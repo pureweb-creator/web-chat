@@ -11,13 +11,12 @@ use Twig\Environment;
  */
 class View
 {
-    protected $logger;
     private $loader;
     private $twig;
 
-    public function __construct(Logger $logger){
-        $this->logger = $logger;
-    }
+    public function __construct(
+        protected Logger $logger
+    ) {}
 
     public function render($page, $data=[])
     {

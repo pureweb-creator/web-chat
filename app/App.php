@@ -18,7 +18,7 @@ $logger = new Logger('php-web-chat');
 $logger->pushHandler(new StreamHandler(__DIR__.'/../debug.log', Level::Warning));
 
 if ($_SERVER['REQUEST_SCHEME']=="http") {
-    $redirect = "https://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+    $redirect = "//" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
     header("Location: $redirect");
 }
 

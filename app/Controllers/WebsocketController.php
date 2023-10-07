@@ -13,14 +13,12 @@ class WebsocketController extends Controller
 {
     protected MessageModel $messageModel;
     protected UserModel $userModel;
-    protected Logger $logger;
     
-    public function __construct(Logger $logger)
+    public function __construct(protected Logger $logger)
     {
         parent::__construct();
         $this->messageModel = new MessageModel();
         $this->userModel = new UserModel();
-        $this->logger = $logger;
     }
 
     public function listen(): void
@@ -83,14 +81,13 @@ class WebsocketController extends Controller
                         $message_text = preg_replace_callback(
                             $pattern,
                             function ($matches) {
-                                if (str_starts_with($matches[0], 'http://') ||
-                                    str_starts_with($matches[0], 'https://') ||
+                                if (
                                     str_starts_with($matches[0], 'ftp://') ||
                                     str_starts_with($matches[0], 'ftps://')
                                 )
                                     return "<a href='{$matches[0]}' target='_blank'>{$matches[0]}</a>";
 
-                                return "<a href='https://{$matches[0]}' target='_blank'>{$matches[0]}</a>";
+                                return "<a href='//{$matches[0]}' target='_blank'>{$matches[0]}</a>";
 
                             },
                             $message_text);

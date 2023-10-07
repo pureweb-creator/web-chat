@@ -12,12 +12,10 @@ use Monolog\Logger;
 class RegisterController extends Controller
 {
     protected UserModel $userModel;
-    protected View $view;
 
-    public function __construct(View $view, Logger $logger)
+    public function __construct(protected View $view,  protected Logger $logger)
     {
         parent::__construct();
-        $this->view = $view;
         $this->userModel = new UserModel();
     }
 

@@ -8,11 +8,9 @@ use Monolog\Logger;
 
 class LogoutController extends Controller
 {
-    protected View $view;
-    public function __construct(View $view, Logger $logger)
+    public function __construct(protected View $view, protected Logger $logger)
     {
         parent::__construct();
-        $this->view = $view;
     }
 
     public function index()

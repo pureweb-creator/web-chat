@@ -7,11 +7,9 @@ use Monolog\Logger;
 
 class NotFoundController extends \App\Core\Controller
 {
-    protected View $view;
-    public function __construct(View $view, Logger $logger)
+    public function __construct(protected View $view, protected Logger $logger)
     {
         parent::__construct();
-        $this->view = $view;
     }
 
     public function index()

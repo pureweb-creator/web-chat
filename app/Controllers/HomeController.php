@@ -13,15 +13,11 @@ class HomeController extends Controller{
 
     protected UserModel $userModel;
     protected MessageModel $messageModel;
-    protected View $view;
-    protected Logger $logger;
 
-    public function __construct(View $view, Logger $logger)
+    public function __construct(protected View $view, protected Logger $logger)
     {
         parent::__construct();
-
-        $this->view = $view;
-        $this->logger = $logger;
+    
         $this->userModel = new UserModel();
         $this->messageModel = new MessageModel();
     }

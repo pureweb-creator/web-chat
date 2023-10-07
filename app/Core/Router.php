@@ -62,6 +62,6 @@ final class Router{
 
 	public static function getUrl(): string
     {
-		return SITE_URL;
+		return '//'.$_SERVER['HTTP_HOST'];
 	}
 }

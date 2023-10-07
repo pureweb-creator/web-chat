@@ -4,7 +4,6 @@ $dotenv = Dotenv\Dotenv::createImmutable(__DIR__.'/../../');
 $dotenv->load();
 
 // Define some important constants
-define('SITE_URL',    $_ENV['SITE_URL']);
 
 define('DB_USERNAME', $_ENV['MYSQL_USER']);
 define('DB_PASSWORD', $_ENV['MYSQL_PASSWORD']);
