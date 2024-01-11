@@ -37,10 +37,13 @@ class WebsocketController extends Controller
 
                     $response = json_encode([
                         'action' => 'onConnect',
-                        'data' => $this->userModel->loadUsers()
+                        'data' => [
+                            $this->userModel->loadUser('id',  $_GET['user'])[0],
+                            $this->userModel->loadUser('id', $_GET['userTo'])[0]
+                        ]
                     ]);
 
-                    foreach ($activeConnections as $key => $value)
+                    foreach ($activeConnections as $value)
                         $value->send($response);
                 } catch (\PDOException $e) {
                     $this->logger->critical("Database Error: ".$e->getMessage()." in ". $e->getFile()." on line ".$e->getLine());
@@ -174,10 +177,10 @@ class WebsocketController extends Controller
 
                 $response = json_encode([
                     'action' => 'onDisconnect',
-                    'data' => $this->userModel->loadUsers()
+                    'data' => $this->userModel->loadUser('id', $user)
                 ]);
 
-                foreach ($activeConnections as $key => $value)
+                foreach ($activeConnections as $value)
                     $value->send($response);
 
                 unset($activeConnections[$user]);

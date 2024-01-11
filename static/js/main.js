@@ -38,7 +38,7 @@ $(document).ready(function(){
             this.loadFirstPack()
 
             // opens websocket connection
-            this.ws = new WebSocket(`ws://127.0.0.1:8000/ws?user=${$('#messageFrom').val() ?? ''}`);
+            this.ws = new WebSocket(`ws://127.0.0.1:8000/ws?user=${$('#messageFrom').val() ?? ''}&userTo=${$('#messageTo').val() ?? ''}`);
             // Listen websocket for a response
             this.wsListen()
         },

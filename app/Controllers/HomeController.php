@@ -31,6 +31,8 @@ class HomeController extends Controller{
         if ($message_to != -1)
             $recipient = $this->userModel->loadUser('id', $message_to)[0] ?? false;
 
+
+
         $this->data = [
             'users'=>$this->userModel->loadUsers(),
             'logged_user'=>$_SESSION['logged_user'],
