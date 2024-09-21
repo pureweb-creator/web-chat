@@ -277,30 +277,6 @@ $(document).ready(function(){
                     }
                 }
             },
-            loadFirstPack: function (){
-                // Get first pack of messages
-                formData = new FormData()
-                formData.append('offset', this.loading_offset)
-                formData.append('limit', this.limit)
-                formData.append('message_to', $('#messageTo').val() ?? '')
-                formData.append('message_from', $('#messageFrom').val() ?? '')
-                formData.append('_token', this._token)
-
-                axios({
-                    method: "POST",
-                    url: "./home/loadMessages",
-                    data: formData
-                })
-                    .then(response=>{
-                        if (response.data.length) {
-                            this.firstMessageID = response.data[response.data.length-1]?.message_id
-                            this.messages = response.data.reverse()
-                        }
-
-                        this.scrollDownTrigger = !this.scrollDownTrigger
-                        this.loading_offset+=100
-                    })
-            },
             scrollDownHandler: function(){
                 let scrollHeigth = this.$refs.chatBody.scrollHeight
                 let scrollTop = this.$refs.chatBody.scrollTop
