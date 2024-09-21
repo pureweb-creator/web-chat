@@ -8,6 +8,7 @@ use App\Core\View;
 use App\Models\MessageModel;
 use App\Models\UserModel;
 use Monolog\Logger;
+use DebugBar\StandardDebugBar;
 
 class HomeController extends Controller{
 
@@ -25,13 +26,13 @@ class HomeController extends Controller{
     public function index(): void
     {
         Middleware::Authentication('user');
+        $debugbar = new StandardDebugBar();
+        $debugbarRenderer = $debugbar->getJavascriptRenderer();
 
         $message_to = $_GET['uid'] ?? -1;
 
         if ($message_to != -1)
             $recipient = $this->userModel->loadUser('id', $message_to)[0] ?? false;
-
-
 
         $this->data = [
             'users'=>$this->userModel->loadUsers(),
@@ -40,6 +41,9 @@ class HomeController extends Controller{
         ];
 
 		echo $this->view->render('index.twig', $this->data);
+
+        echo $debugbarRenderer->renderHead();
+        echo $debugbarRenderer->render();
 	}
 
     public function loadMessages(): void

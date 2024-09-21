@@ -13,7 +13,7 @@ class WebsocketController extends Controller
 {
     protected MessageModel $messageModel;
     protected UserModel $userModel;
-    
+
     public function __construct(protected Logger $logger)
     {
         parent::__construct();
@@ -38,7 +38,7 @@ class WebsocketController extends Controller
                     $response = json_encode([
                         'action' => 'onConnect',
                         'data' => [
-                            $this->userModel->loadUser('id',  $_GET['user'])[0],
+                            $this->userModel->loadUser('id', $_GET['user'])[0],
                             $this->userModel->loadUser('id', $_GET['userTo'])[0]
                         ]
                     ]);
@@ -114,7 +114,7 @@ class WebsocketController extends Controller
                         // send message to current connection
                         $activeConnections[$message['message_from']]->send($response);
 
-                        // send message to recipient connection (but not to self)
+                        // send message to recipient's connection (but not to yourself)
                         if (array_key_exists($message['message_to'], $activeConnections) && $message['message_from'] !== $message['message_to'])
                             $activeConnections[$message['message_to']]->send($response);
 

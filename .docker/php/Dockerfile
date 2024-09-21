@@ -24,7 +24,8 @@ RUN docker-php-ext-configure pcntl --enable-pcntl \
 COPY composer.json $WORKDIR
 
 RUN composer install \
-  --ignore-platform-reqs
+  --ignore-platform-reqs \
+  --no-scripts
 
 # COPY /.docker/php/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 # CMD ["/usr/bin/supervisord"]

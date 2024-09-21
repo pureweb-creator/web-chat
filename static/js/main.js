@@ -6,7 +6,7 @@ $(document).ready(function(){
             return {
                 showEmojiPicker: false,
                 loading_offset: 0,
-                limit: 100,
+                limit: 50,
                 messagesCount: 0,
                 firstMessageID: 0,
                 scrollDownTrigger: false,
@@ -16,7 +16,7 @@ $(document).ready(function(){
                 isStartTyping: null,
                 typingEvent: null,
                 isVisibleScrollDownArrow: false,
-                messages: [],
+                messages: null,
                 message: {
                     message_text: "",
                     user_id: "",
@@ -35,7 +35,7 @@ $(document).ready(function(){
             this._token = document.querySelector('meta[name="_token"]').content
             axios.defaults.headers.common['X-CSRF-TOKEN'] = this._token;
 
-            this.loadFirstPack()
+            this.loadMessages()
 
             // opens websocket connection
             this.ws = new WebSocket(`ws://127.0.0.1:8000/ws?user=${$('#messageFrom').val() ?? ''}&userTo=${$('#messageTo').val() ?? ''}`);
@@ -49,7 +49,7 @@ $(document).ready(function(){
                 // if new line, scroll entire dialog body
                 this.scrollDownTrigger = !this.scrollDownTrigger
             },
-            pasteText(e) {                
+            pasteText(e) {
                 // Get the copied text from the clipboard
                 const text = e.clipboardData
                     ? (e.originalEvent || e).clipboardData.getData('text/plain')
@@ -59,16 +59,16 @@ $(document).ready(function(){
                     : '';
 
                 this.message.message_text += text
-        
+
                 // Insert text at the current position of caret
                 const range = document.getSelection().getRangeAt(0);
                 range.deleteContents();
-    
+
                 const textNode = document.createTextNode(text);
                 range.insertNode(textNode);
                 range.selectNodeContents(textNode);
                 range.collapse(false);
-    
+
                 const selection = window.getSelection();
                 selection.removeAllRanges();
                 selection.addRange(range);
@@ -142,11 +142,10 @@ $(document).ready(function(){
             loadMessages: function (){
 
                 // check if we are scrolling up
-                if (this.$refs.chatBody.scrollTop === 0) {
+                if (!this.$refs.chatBody || this.$refs.chatBody.scrollTop === 0) {
 
-                    // check if we scrolled to the beginning of the messages history
-                    if (this.messages[0].message_id !== this.firstMessageID) {
-
+                    // ensure we aren't scrolled to the very beginning of the entire message history
+                    // if (this.messages[0].message_id !== this.firstMessageID) {
                         let formData = new FormData()
                         formData.append('offset', this.loading_offset)
                         formData.append('limit', this.limit)
@@ -160,21 +159,22 @@ $(document).ready(function(){
                             data: formData
                         })
                             .then(response => {
+                                newMessages = response.data.reverse()
 
-                                let temp = []
-
-                                for (var i in response.data.reverse())
-                                    temp.push(response.data[i])
-
-                                this.messages = temp.concat(this.messages)
+                                this.messages = this.messages == null
+                                    ? newMessages
+                                    : newMessages.concat(this.messages)
 
                                 // scroll to the element where we left off
-                                location.href="#"+(temp.length)
-                            });
-                    }
+                                location.href="#"+(newMessages.length-1)
 
-                    if (this.messages.length===this.loading_offset)
-                        this.loading_offset+=100
+                                // if first loading (when first chat opening)
+                                if (this.loading_offset === 0)
+                                    this.scrollDownTrigger = !this.scrollDownTrigger
+
+                                this.loading_offset+=this.limit
+                            });
+                    // }
                 }
             },
             getTimeFromDateTime: function (date){
@@ -212,6 +212,8 @@ $(document).ready(function(){
                     switch (parsed_response.action){
                         case "onConnect":
                         case "onDisconnect":
+
+                            // array contains connected user and current logged user from session. Or one disconnected user.
                             parsed_response.data.forEach(element => {
 
                                 if (parseInt(element.id) !== parseInt($('#messageTo').val()))
@@ -224,7 +226,8 @@ $(document).ready(function(){
                                 let lastSeenInHours = Math.floor(lastSeenInMinutes/60)
                                 let lastSeenInDays = Math.floor(lastSeenInHours/24)
 
-                                let lastSeenHourMinute = (new Date(lastSeenInMilliseconds).toLocaleTimeString()).slice(0, 5)
+                                let lastSeenHourMinute = (new Date(lastSeenInMilliseconds).toLocaleTimeString()).slice(0, 4)
+
                                 let lastSeenMonthDay = (new Date(lastSeenInMilliseconds).toLocaleDateString()).slice(0, 5)
                                 let lastSeenYear = (new Date(lastSeenInMilliseconds).toLocaleDateString()).slice(6)
 

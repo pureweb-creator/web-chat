@@ -2,7 +2,6 @@ version: '3.8'
 
 # Services
 services:
-
   # NGINX Service
   nginx-web-chat:
     image: nginx:latest
@@ -55,7 +54,7 @@ services:
       mysql-web-chat:
         condition: service_healthy
     entrypoint: ["php", "/var/www/web-chat.loc/websocket.php", "start"]
-    expose: 
+    expose:
       - 8282
     networks:
       - network-web-chat
@@ -64,6 +63,8 @@ services:
   mysql-web-chat:
     image: mysql:latest
     restart: always
+    ports:
+      - '3306:3306'
     container_name: mysql-web-chat
     environment:
       MYSQL_USER: ${MYSQL_USER}

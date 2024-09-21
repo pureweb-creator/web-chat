@@ -18,15 +18,19 @@
             <div>
                 <p class="recipient-panel__username">{{ message_to.user_name }}</p>
                 <p class="recipient-panel__user-status" :class="{'online': user.isOnline}">
-               <span v-if="!user.isTyping">
-                   [[ user.lastSeen ]]
-               </span>
-                    <span v-else>
-                    <span class="recipient-panel__typing">
-                        <span class="recipient-panel__typing-animation"><span></span><span></span><span></span></span>
-                        typing
+                    <span v-if="!user.isTyping">
+                        [[ user.lastSeen ]]
                     </span>
-                </span>
+                    <span v-else>
+                        <span class="recipient-panel__typing">
+                            <span class="recipient-panel__typing-animation">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </span>
+                            typing
+                        </span>
+                    </span>
                 </p>
             </div>
         </div>

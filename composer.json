@@ -4,6 +4,7 @@
         "monolog/monolog": "^3.2",
         "robmorgan/phinx": "^0.13.3",
         "fakerphp/faker": "^1.21",
+      "maximebf/debugbar": "1.*",
       "ext-pdo": "*",
         "vlucas/phpdotenv": "^5.5",
         "twig/twig": "^3.7",
